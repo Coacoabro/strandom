@@ -76,15 +76,19 @@ export default function Game() {
         <main className="p-4">
         {boardData && (
             <div className="max-w-7xl mx-auto">
-                <div className="sm:flex space-y-4">
-                    <div className="flex justify-center sm:w-1/2">
+                <div className="space-y-4">
+                    <div className="flex justify-center">
                         <GameBoard board={boardData} onSelect={handleSelect} selected={selected} foundWords={foundWords}/>
                     </div>
-                    <div className="justify-between h-24 py-2 px-4">
+                    <div className="text-center h-24 py-2 px-4 text-xl font-bold">
+                        <div className={`${foundWords.length == solutionWords.length ? "text-green-400" : ""}`}>
+                            {foundWords.length} out of {solutionWords.length}
+                        </div>
                         <WordInput letters={selected.map(([r, c]) => boardData[r][c])} />
                         <div className={`text-xl font-bold ${wordFound ? "text-green-400" : ""}`}>
                             {alert}
                         </div>
+
                     </div>
                 </div>
                 
