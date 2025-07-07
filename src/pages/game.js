@@ -22,9 +22,12 @@ export default function Game() {
     const [selected, setSelected] = useState([]);
     const [foundWords, setFoundWords] = useState([]);
     const [alert, setAlert] = useState(null)
+    const [wordFound, setWordFound] = useState(false)
 
 
     const handleSelect = (row, col) => {
+
+        setWordFound(false)
 
 
         if (selected.length >= 2 && selected[selected.length - 2][0] === row && selected[selected.length - 2][1] === col) {
@@ -46,9 +49,12 @@ export default function Game() {
                     ...foundWords, 
                     { word: word.toUpperCase(), path: [...selected]}
                 ]);
+                setWordFound(true)
                 setAlert(word.toUpperCase())
+            } else if (selected.length > 3) {
+                setAlert("NOT A WORD!")
             } else {
-                setAlert("Not a word!")
+                setAlert("")
             }
             setSelected([]); // Clear selection
         } else {
@@ -74,9 +80,9 @@ export default function Game() {
                     <div className="flex justify-center sm:w-1/2">
                         <GameBoard board={boardData} onSelect={handleSelect} selected={selected} foundWords={foundWords}/>
                     </div>
-                    <div className="flex justify-between h-24 py-2 px-4">
+                    <div className="justify-between h-24 py-2 px-4">
                         <WordInput letters={selected.map(([r, c]) => boardData[r][c])} />
-                        <div>
+                        <div className={`text-xl font-bold ${wordFound ? "text-green-400" : ""}`}>
                             {alert}
                         </div>
                     </div>
