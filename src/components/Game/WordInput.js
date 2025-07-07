@@ -1,7 +1,7 @@
 export default function WordInput({ letters }) {
     const word = letters.join("");
     return (
-        <div className="mt-32 text-xl font-mono">
+        <div className="text-xl font-mono">
             Current Word: <span className="font-bold">{word}</span>
         </div>
     );
