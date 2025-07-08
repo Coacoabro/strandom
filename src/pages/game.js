@@ -187,8 +187,14 @@ export default function Game() {
 
 function isSamePath(a, b) {
   if (a.length !== b.length) return false;
-  return a.every(([r1, c1], i) => {
-    const [r2, c2] = b[i];
-    return r1 === r2 && c1 === c2;
-  });
+  const setA = new Set(a.map(([r, c]) => `${r},${c}`))
+  const setB = new Set(b.map(([r, c]) => `${r},${c}`));
+
+  if (setA.size !== setB.size) return false;
+
+  for (let pos of setA) {
+    if (!setB.has(pos)) return false;
+  }
+
+  return true
 }

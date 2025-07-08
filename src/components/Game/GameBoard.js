@@ -10,25 +10,26 @@ export default function GameBoard({ board, onSelect, selected, foundWords, isDra
         ) 
 
     return (
-        <Card className="w-64">
-            <div className="grid grid-cols-6 pl-2.5">
+        <Card className="w-[360px]">
+            <div className="grid grid-cols-6 gap-x-1 gap-y-4">
                 {board.map((row, rowIndex) =>
                     row.map((letter, colIndex) => {
                         const tilePath = foundWords.find(word => word.path.some(([r,c]) => r === rowIndex && c == colIndex))?.path
                         let connectTo = null
+                        let foundConnectTo = null
                         if (tilePath) {
                             const currentIndex = tilePath.findIndex(([r,c]) => r == rowIndex && c == colIndex)
                             const prev = tilePath[currentIndex - 1]
                             if (prev) {
-                                connectTo = getDirection(prev, [rowIndex, colIndex])
+                                foundConnectTo = getDirection(prev, [rowIndex, colIndex])
                             }
-                        } else {
-                            const selectedIndex = selected.findIndex(([r,c]) => r == rowIndex && c == colIndex)
-                            const prev = selected[selectedIndex - 1]
-                            if (prev) {
-                                connectTo = getDirection(prev, [rowIndex, colIndex])
-                            }
+                        } 
+                        const selectedIndex = selected.findIndex(([r,c]) => r == rowIndex && c == colIndex)
+                        const prev = selected[selectedIndex - 1]
+                        if (prev) {
+                            connectTo = getDirection(prev, [rowIndex, colIndex])
                         }
+                        
                         return(
                             <LetterTile
                                 key={`${rowIndex}-${colIndex}`}
@@ -37,6 +38,7 @@ export default function GameBoard({ board, onSelect, selected, foundWords, isDra
                                 isFound={isInFoundWords(rowIndex, colIndex)}
                                 onClick={() => onSelect(rowIndex, colIndex)}
                                 connectTo={connectTo}
+                                foundConnectTo={foundConnectTo}
                                 onMouseDown={() => {onMouseDown(rowIndex, colIndex)}}
                                 onMouseEnter={() => {onMouseEnter(rowIndex, colIndex)}}
                                 onMouseUp={() => {onMouseUp(rowIndex, colIndex)}}
