@@ -1,16 +1,20 @@
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button"
+import { useState } from "react";
 
 
-export default function LetterTile( { letter, onClick, isSelected, isFound, connectTo }) {
+export default function LetterTile( { letter, onClick, isSelected, isFound, connectTo, onMouseDown, onMouseEnter, onMouseUp, isDragging  }) {
+ 
     
     return (
         <div className="relative w-10 h-10">
             <Button
                 variant="ghost"
-                className={`w-8 h-8 text-xl font-bold rounded-full ${isFound ? "bg-green-300 hover:bg-green-300" : isSelected ? "bg-blue-400 hover:bg-blue-400" : "bg-white hover:bg-white"} `}
-                onClick={onClick}
-                pointer-events-none
+                className={`select-none w-8 h-8 text-xl font-bold rounded-full ${isFound ? "bg-green-300 hover:bg-green-300" : isSelected ? "bg-blue-400 hover:bg-blue-400" : "bg-white hover:bg-white"} `}
+                onClick={!isDragging ? onClick : undefined}
+                onMouseDown={onMouseDown}
+                onMouseEnter={onMouseEnter}
+                onMouseUp={isDragging ? onMouseUp : null}
             >
                 {letter}
             </Button>
@@ -18,6 +22,7 @@ export default function LetterTile( { letter, onClick, isSelected, isFound, conn
             {connectTo && (
                 <div className={cn(connectorClass(connectTo, isFound))} />
             )}
+
         </div>
     )
 }

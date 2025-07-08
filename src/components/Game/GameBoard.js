@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Card } from "../ui/card";
 import LetterTile from "./LetterTile";
 
-export default function GameBoard({ board, onSelect, selected, foundWords }) {
+export default function GameBoard({ board, onSelect, selected, foundWords, isDragging, onMouseDown, onMouseEnter, onMouseUp }) {
+
     const isInFoundWords = (row, col) =>
         foundWords.some(({path}) =>
             path.some(([r,c]) => r === row && c === col)
@@ -35,6 +37,10 @@ export default function GameBoard({ board, onSelect, selected, foundWords }) {
                                 isFound={isInFoundWords(rowIndex, colIndex)}
                                 onClick={() => onSelect(rowIndex, colIndex)}
                                 connectTo={connectTo}
+                                onMouseDown={() => {onMouseDown(rowIndex, colIndex)}}
+                                onMouseEnter={() => {onMouseEnter(rowIndex, colIndex)}}
+                                onMouseUp={() => {onMouseUp(rowIndex, colIndex)}}
+                                isDragging={isDragging}
                             />
                         )
                     })
