@@ -206,8 +206,6 @@ export default function Game( {genre} ) {
         )
     }
 
-    console.log(hintedWords)
-
     if (gameInfo){
 
         return (
