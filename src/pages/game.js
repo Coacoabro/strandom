@@ -1,5 +1,5 @@
 // pages/game.js
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import GameBoard from "@/components/Game/GameBoard";
 import WordInput from "@/components/Game/WordInput";
 import { Card } from "@/components/ui/card";
@@ -35,17 +35,20 @@ export default function Game() {
     const [wordFound, setWordFound] = useState(false)
     const [isDragging, setIsDragging] = useState(false)
     const [didDrag, setDidDrag] = useState(false)
-    const [mouseDown, setMouseDown] = useState(false)
+    const [pointerDown, setPointerDown] = useState(false)
+
+    const touchActive = useRef(false)
 
 
+    //PC
     const handleStartDrag = (row, col) => {
         setIsDragging(true)
         setDidDrag(false)
         handleSelect(row, col)
+        console.log("Done")
     }
-
     const handleDragOver = (row, col) => {
-        if (!mouseDown) return;
+        if (!pointerDown) return;
 
         if (selected.length >= 2 && selected[selected.length - 2][0] === row && selected[selected.length - 2][1] === col) {
             setSelected(selected.slice(0, -1))
@@ -69,8 +72,7 @@ export default function Game() {
         setSelected([...selected, [row, col]]);
         setDidDrag(true)
     };
-
-    const handleEndDrag = (row, col) => {
+    const handleEndDrag = () => {
         if (isDragging && didDrag && selected.length > 1) {
             handleWordCheck()
         }
@@ -80,11 +82,16 @@ export default function Game() {
     }
 
     useEffect(() => {
-        const handleGlobalMouseUp = () => setMouseDown(false);
-        const handleGlobalMouseDown = () => setMouseDown(true)
-        window.addEventListener("mouseup", handleGlobalMouseUp);
-        window.addEventListener("mousedown", handleGlobalMouseDown);
-        return () => window.removeEventListener("mouseup", handleGlobalMouseUp);
+        const handlePointerDown = () => setPointerDown(true)
+        const handlePointerUp = () => setPointerDown(false)
+        
+        window.addEventListener("pointerdown", handlePointerDown, { passive: false });
+        window.addEventListener("pointerup", handlePointerUp);
+        return () => {
+            window.removeEventListener("pointerdown", handlePointerDown);
+            window.removeEventListener("pointerup", handlePointerUp);
+        };
+
     }, []);
 
 
@@ -164,6 +171,9 @@ export default function Game() {
                             onMouseEnter={handleDragOver}
                             onMouseUp={handleEndDrag}
                             isDragging={isDragging}
+                            onTouchStart={handleStartDrag}
+                            onTouchMove={handleDragOver}
+                            onTouchEnd={handleEndDrag}
                         />
                     </div>
                     <div className="text-center h-24 py-2 px-4 text-xl font-bold">

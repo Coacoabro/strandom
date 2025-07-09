@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card } from "../ui/card";
 import LetterTile from "./LetterTile";
 
-export default function GameBoard({ board, onSelect, selected, foundWords, isDragging, onMouseDown, onMouseEnter, onMouseUp }) {
+export default function GameBoard({ board, onSelect, selected, foundWords, isDragging, onMouseDown, onMouseEnter, onMouseUp, onTouchStart, onTouchMove, onTouchEnd }) {
 
     const isInFoundWords = (row, col) =>
         foundWords.some(({path}) =>
@@ -11,7 +11,7 @@ export default function GameBoard({ board, onSelect, selected, foundWords, isDra
 
     return (
         <Card className="w-[360px]">
-            <div className="grid grid-cols-6 gap-x-1 gap-y-4">
+            <div className="grid grid-cols-6 gap-x-1 gap-y-4 touch-none">
                 {board.map((row, rowIndex) =>
                     row.map((letter, colIndex) => {
                         const tilePath = foundWords.find(word => word.path.some(([r,c]) => r === rowIndex && c == colIndex))?.path
@@ -42,6 +42,9 @@ export default function GameBoard({ board, onSelect, selected, foundWords, isDra
                                 onMouseDown={() => {onMouseDown(rowIndex, colIndex)}}
                                 onMouseEnter={() => {onMouseEnter(rowIndex, colIndex)}}
                                 onMouseUp={() => {onMouseUp(rowIndex, colIndex)}}
+                                onTouchStart={() => {onTouchStart(rowIndex, colIndex)}}
+                                onTouchMove={() => {onTouchMove(rowIndex, colIndex)}}
+                                onTouchEnd={() => {onTouchEnd(rowIndex, colIndex)}}
                                 isDragging={isDragging}
                             />
                         )
