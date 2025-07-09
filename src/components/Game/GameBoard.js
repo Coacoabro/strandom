@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card } from "../ui/card";
 import LetterTile from "./LetterTile";
 
-export default function GameBoard({ board, onSelect, selected, foundWords, isDragging, onMouseDown, onMouseEnter, onMouseUp, onTouchStart, onTouchMove, onTouchEnd }) {
+export default function GameBoard({ board, onSelect, selected, foundWords, isDragging, onMouseDown, onMouseEnter, onMouseUp, onTouchStart, onTouchMove, onTouchEnd, hintedWords, solutionWords }) {
 
     const isInFoundWords = (row, col) =>
         foundWords.some(({path}) =>
@@ -29,6 +29,8 @@ export default function GameBoard({ board, onSelect, selected, foundWords, isDra
                         if (prev) {
                             connectTo = getDirection(prev, [rowIndex, colIndex])
                         }
+
+                        const isHinted = hintedWords.some(wordObj => solutionWords.find(w => w.word == wordObj)?.path.some(([r,c]) => r == rowIndex && c == colIndex))
                         
                         return(
                             <LetterTile
@@ -46,6 +48,7 @@ export default function GameBoard({ board, onSelect, selected, foundWords, isDra
                                 onTouchMove={() => {onTouchMove(rowIndex, colIndex)}}
                                 onTouchEnd={() => {onTouchEnd(rowIndex, colIndex)}}
                                 isDragging={isDragging}
+                                isHinted={isHinted}
                             />
                         )
                     })
