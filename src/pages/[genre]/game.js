@@ -36,6 +36,8 @@ export default function Game( {genre} ) {
     const [isDragging, setIsDragging] = useState(false)
     const [didDrag, setDidDrag] = useState(false)
     const [pointerDown, setPointerDown] = useState(false)
+    const [guessedWords, setGuessedWords] = useState([])
+    const [allowedHint, setAllowedHint] = useState(2)
 
     const touchActive = useRef(false)
 
@@ -134,7 +136,13 @@ export default function Game( {genre} ) {
             setWordFound(true)
             setAlert(word)
         } else if (validWords && validWords[word.toLowerCase()] && selected.length > 3) {
-            setAlert("Good try!")
+            const guess = word.toLowerCase()
+            if (guessedWords.includes(guess)){
+                setAlert("Already guessed!")
+            } else {
+                setAlert("Good try!")
+                setGuessedWords([...guessedWords, guess])
+            }
         } else if (selected.length > 3) {
             setAlert("Not a word!")
         } else {
@@ -177,14 +185,17 @@ export default function Game( {genre} ) {
     };
 
     const handleHint = () => {
-        const nextHint = solutionWords.find(sol =>
-            !foundWords.some(f => f.word == sol.word)
-        )
-        if (!nextHint) {
-            setAlert("No more hints available!")
-            return
+        if(guessedWords.length > allowedHint){
+            const nextHint = solutionWords.find(sol =>
+                !foundWords.some(f => f.word == sol.word)
+            )
+            if (!nextHint) {
+                setAlert("No more hints available!")
+                return
+            }
+            setHintedWords([...hintedWords, nextHint.word])
+            setAllowedHint(allowedHint + 3)
         }
-        setHintedWords([...hintedWords, nextHint.word])
     }
 
     const { data: gameInfo, isLoading, isError } = useQuery({
@@ -206,6 +217,8 @@ export default function Game( {genre} ) {
             <div>Loading...</div>
         )
     }
+
+    console.log(hintedWords)
 
     if (gameInfo){
 
@@ -247,7 +260,7 @@ export default function Game( {genre} ) {
 
                             <Button
                                 onClick={()=> handleHint()}
-                            
+                                className={`${guessedWords.length > allowedHint ? "animate-pulse" : ""}`}
                             >
                                 Hint
                             </Button>
@@ -256,6 +269,7 @@ export default function Game( {genre} ) {
                                 onClick={() => {
                                     localStorage.removeItem("foundWords");
                                     setFoundWords([]);
+                                    setGuessedWords([])
                                     setAlert(null);
                                 }}
                             >

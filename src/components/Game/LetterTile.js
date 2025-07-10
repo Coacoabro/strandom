@@ -7,13 +7,13 @@ export default function LetterTile( { letter, onClick, isSelected, isFound, conn
  
     
     return (
-        <div className="relative text-center w-full h-full">
+        <div className="relative text-center w-full h-full transition-all transition-colors duration-200">
             <Button
                 variant="ghost"
                 className={`z-50 pt-1 rounded-full leading-none select-none w-12 h-12 text-3xl font-bold 
                     ${isSelected ? "bg-blue-400 hover:bg-blue-400 text-black hover:text-black font-bold" 
                         : isFound ? "bg-green-300 hover:bg-green-300 text-black hover:text-black font-bold" 
-                        : isHinted ? "outline outline-2 outline-blue-400" 
+                        : isHinted ? "text-blue-400 dark:text-blue-500" 
                         : ""} `}
                 onClick={!isDragging ? onClick : undefined}
                 onMouseDown={onMouseDown}
@@ -42,7 +42,7 @@ export default function LetterTile( { letter, onClick, isSelected, isFound, conn
 
 
 function connectorClass(dir, isFound, above) {
-    const base = above ? "absolute z-0 transition-all" : "absolute z-10 transition-all"
+    const base = above ? "absolute z-0" : "absolute z-10"
     let color = isFound ? "bg-green-300" : "bg-blue-400"
     
     switch (dir) {
