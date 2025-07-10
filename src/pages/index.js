@@ -1,36 +1,19 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import DarkMode from "@/components/DarkMode";
 
-const loadPuzzle = async () => {
-  const today = new Date();
-  const yyyy = today.getFullYear();
-  const mm = String(today.getMonth() + 1).padStart(2, '0');
-  const dd = String(today.getDate()).padStart(2, '0');
-  const date = `${yyyy}${mm}${dd}`;
 
-  const url = `https://www.d35lwzawlg3izy.cloudfront.net/data/${date}.json`;
-
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-
-  } catch (err) {
-    console.error("Error loading puzzle:", err);
-    return null;
-  }
-};
 
 export default function Home() {
+  
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-6 bg-gray-100">
+    <main className="flex min-h-screen flex-col items-center justify-center p-6">
       <Card className="w-full max-w-md rounded-2xl shadow-xl">
+        <DarkMode isAbsolute={true}/>
+        
         <CardContent className="p-6 text-center">
             <h1 className="text-3xl font-bold mb-4">Welcome to Strandom</h1>
             <p className="mb-6 text-gray-600">

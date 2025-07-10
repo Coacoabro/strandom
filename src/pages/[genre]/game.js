@@ -5,6 +5,7 @@ import GameBoard from "@/components/Game/GameBoard";
 import WordInput from "@/components/Game/WordInput";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import DarkMode from "@/components/DarkMode";
 
 export async function getServerSideProps(context) {
     const { genre } = context.params
@@ -209,7 +210,7 @@ export default function Game( {genre} ) {
     if (gameInfo){
 
         return (
-            <main className="p-4">
+            <main className="flex min-h-screen flex-col items-center justify-center p-6">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center h-24 py-2 px-4 text-3xl font-bold">
                         {title}
@@ -260,6 +261,8 @@ export default function Game( {genre} ) {
                             >
                                 Reset Progress
                             </Button>
+
+                            <DarkMode />
 
                         </div>
 

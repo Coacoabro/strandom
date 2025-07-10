@@ -8,7 +8,8 @@ export default async function handler(req, res) {
     const yyyy = today.getFullYear();
     const mm = String(today.getMonth() + 1).padStart(2, '0');
     const dd = String(today.getDate()).padStart(2, '0');
-    const date = `${yyyy}${mm}${dd}`;
+    // const date = `${yyyy}${mm}${dd}`;
+    const date = `20250709`
 
     const url = `https://d35lwzawlg3izy.cloudfront.net/data/${genre}/${date}.json`;
 
