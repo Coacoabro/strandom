@@ -260,7 +260,7 @@ export default function Game( {genre} ) {
 
                             <Button
                                 onClick={()=> handleHint()}
-                                className={`${guessedWords.length > allowedHint ? "animate-pulse" : ""}`}
+                                className={`${guessedWords.length > allowedHint ? "animate-pulse" : ""} `}
                             >
                                 Hint
                             </Button>
