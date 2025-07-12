@@ -3,12 +3,14 @@ import { Button } from "../ui/button"
 import { useState } from "react";
 
 
-export default function LetterTile( { letter, onClick, isSelected, isFound, connectTo, foundConnectTo, onMouseDown, onMouseEnter, onMouseUp, onTouchStart, onTouchMove, onTouchEnd, isDragging, isHinted  }) {
+export default function LetterTile( { letter, row, col, onClick, isSelected, isFound, connectTo, foundConnectTo, onPointerDown, onPointerEnter, onPointerUp, isDragging, isHinted  }) {
  
     
     return (
         <div className="relative text-center w-full h-full transition-all transition-colors duration-200">
             <Button
+                data-row={row}
+                data-col={col}
                 variant="ghost"
                 className={`z-50 pt-1 rounded-full leading-none select-none w-12 h-12 text-3xl font-bold 
                     ${isSelected ? "bg-blue-400 hover:bg-blue-400 text-black hover:text-black font-bold" 
@@ -16,12 +18,9 @@ export default function LetterTile( { letter, onClick, isSelected, isFound, conn
                         : isHinted ? "text-blue-400 dark:text-blue-500" 
                         : ""} `}
                 onClick={!isDragging ? onClick : undefined}
-                onMouseDown={onMouseDown}
-                onMouseEnter={onMouseEnter}
-                onMouseUp={isDragging ? onMouseUp : null}
-                onTouchStart={onTouchStart}
-                onTouchMove={onTouchMove}
-                onTouchEnd={onTouchEnd}
+                onPointerDown={onPointerDown}
+                onPointerEnter={onPointerEnter}
+                onPointerUp={isDragging ? onPointerUp : null}
             >
                 {letter}
             </Button>

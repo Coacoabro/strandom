@@ -6,6 +6,7 @@ import WordInput from "@/components/Game/WordInput";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import DarkMode from "@/components/DarkMode";
+import LoadingGameBoard from "@/components/Game/LoadingGameBoard";
 
 export async function getServerSideProps(context) {
     const { genre } = context.params
@@ -46,11 +47,9 @@ export default function Game( {genre} ) {
         setIsDragging(true)
         setDidDrag(false)
         handleSelect(row, col)
-        console.log("Done")
     }
     const handleDragOver = (row, col) => {
-        if (!pointerDown) return;
-
+        if (!pointerDown) return
         if (selected.length >= 2 && selected[selected.length - 2][0] === row && selected[selected.length - 2][1] === col) {
             setSelected(selected.slice(0, -1))
             setAlert(null)
@@ -82,29 +81,17 @@ export default function Game( {genre} ) {
         setDidDrag(false)
     }
 
+    // LOAD PROGRESS
     useEffect(() => {
-
         const savedWords = localStorage.getItem("foundWords")
-        if (savedWords) {
-            setFoundWords(JSON.parse(savedWords))
-        }
-
-        const handlePointerDown = () => setPointerDown(true)
-        const handlePointerUp = () => setPointerDown(false)
-        
-        window.addEventListener("pointerdown", handlePointerDown, { passive: false });
-        window.addEventListener("pointerup", handlePointerUp);
-        return () => {
-            window.removeEventListener("pointerdown", handlePointerDown);
-            window.removeEventListener("pointerup", handlePointerUp);
-        };
-
-    }, []);
-
+        if (savedWords) setFoundWords(JSON.parse(savedWords))
+    }, [])
+    // SAVE PROGRESS
     useEffect(() => {
         localStorage.setItem("foundWords", JSON.stringify(foundWords))
     }, [foundWords])
 
+    // DICTIONARY AND HINT
     useEffect(() => {
         const fetchDictionary = async () => {
             const res = await fetch("/words_dictionary.json")
@@ -112,6 +99,32 @@ export default function Game( {genre} ) {
             setValidWords(data)
         }
         fetchDictionary()
+    }, [])
+    const handleHint = () => {
+        if(guessedWords.length > allowedHint){
+            const nextHint = solutionWords.find(sol =>
+                !foundWords.some(f => f.word == sol.word)
+            )
+            if (!nextHint) {
+                setAlert("No more hints available!")
+                return
+            }
+            setHintedWords([...hintedWords, nextHint.word])
+            setAllowedHint(allowedHint + 3)
+        }
+    }
+
+    // POINTER EVENTS
+    useEffect(() => {
+        const handlePointerDown = () => setPointerDown(true)
+        const handlePointerUp = () => setPointerDown(false)
+        
+        window.addEventListener("pointerdown", handlePointerDown);
+        window.addEventListener("pointerup", handlePointerUp);
+        return () => {
+            window.removeEventListener("pointerdown", handlePointerDown);
+            window.removeEventListener("pointerup", handlePointerUp);
+        };
     }, [])
 
 
@@ -184,26 +197,12 @@ export default function Game( {genre} ) {
         }
     };
 
-    const handleHint = () => {
-        if(guessedWords.length > allowedHint){
-            const nextHint = solutionWords.find(sol =>
-                !foundWords.some(f => f.word == sol.word)
-            )
-            if (!nextHint) {
-                setAlert("No more hints available!")
-                return
-            }
-            setHintedWords([...hintedWords, nextHint.word])
-            setAllowedHint(allowedHint + 3)
-        }
-    }
-
+    // LOAD UP THE GAME
     const { data: gameInfo, isLoading, isError } = useQuery({
         queryKey: ["game", genre],
         queryFn: () => fetchGameData(genre),
         staleTime: 1000 * 60 * 60, // 1 hour
     });
-
     useEffect(() => {
         if(gameInfo){
             setBoardData(gameInfo.board)
@@ -214,11 +213,11 @@ export default function Game( {genre} ) {
 
     if (isLoading) {
         return(
-            <div>Loading...</div>
+            <div className="flex min-h-screen flex-col items-center justify-center p-6">
+                <LoadingGameBoard />
+            </div>
         )
     }
-
-    console.log(hintedWords)
 
     if (gameInfo){
 
@@ -235,13 +234,11 @@ export default function Game( {genre} ) {
                                 onSelect={handleSelect} 
                                 selected={selected} 
                                 foundWords={foundWords} 
-                                onMouseDown={handleStartDrag}
-                                onMouseEnter={handleDragOver}
-                                onMouseUp={handleEndDrag}
-                                isDragging={isDragging}
-                                onTouchStart={handleStartDrag}
+                                onPointerDown={handleStartDrag}
+                                onPointerEnter={handleDragOver}
                                 onTouchMove={handleDragOver}
-                                onTouchEnd={handleEndDrag}
+                                onPointerUp={handleEndDrag}
+                                isDragging={isDragging}
                                 hintedWords={hintedWords}
                                 solutionWords={solutionWords}
                             />
@@ -250,7 +247,7 @@ export default function Game( {genre} ) {
                             <div className={`${foundWords.length == solutionWords.length ? "text-green-400" : ""}`}>
                                 {foundWords.length} out of {solutionWords.length}
                             </div>
-                            <WordInput letters={selected.map(([r, c]) => boardData[r][c])} />
+                            {/* <WordInput letters={selected.map(([r, c]) => boardData[r][c])} /> */}
                             <div className={`text-xl font-bold ${wordFound ? "text-green-400" : ""}`}>
                                 {alert}
                             </div>

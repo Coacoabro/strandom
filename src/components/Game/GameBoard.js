@@ -1,8 +1,33 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Card } from "../ui/card";
 import LetterTile from "./LetterTile";
 
-export default function GameBoard({ board, onSelect, selected, foundWords, isDragging, onMouseDown, onMouseEnter, onMouseUp, onTouchStart, onTouchMove, onTouchEnd, hintedWords, solutionWords }) {
+export default function GameBoard({ board, onSelect, selected, foundWords, isDragging, onPointerDown, onPointerEnter, onTouchMove, onPointerUp, hintedWords, solutionWords }) {
+
+    const containerRef = useRef()
+    const lastTouched = useRef(null)
+
+    const handleTouchMove = (e) => {
+        const touch = e.touches[0]
+        if (!touch) return
+
+        const el = document.elementFromPoint(touch.clientX, touch.clientY);
+
+        if (el && el.dataset && el.dataset.row && el.dataset.col) {
+            const row = Number(el.dataset.row);
+            const col = Number(el.dataset.col);
+
+            if (!lastTouched.current || lastTouched.current[0] !== row || lastTouched.current[1] !== col) {
+                lastTouched.current = [row, col];
+                onTouchMove(row, col);
+            }
+        }
+    }
+
+    const handleTouchEnd = () => {
+        lastTouched.current = null
+        onPointerUp()
+    }
 
     const isInFoundWords = (row, col) =>
         foundWords.some(({path}) =>
@@ -11,7 +36,13 @@ export default function GameBoard({ board, onSelect, selected, foundWords, isDra
 
     return (
         <Card className="w-[360px]">
-            <div className="grid grid-cols-6 gap-x-1 gap-y-4 touch-none">
+            <div 
+                className="grid grid-cols-6 gap-x-1 gap-y-4 touch-none"
+                ref={containerRef}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                onTouchCancel={handleTouchEnd}
+            >
                 {board.map((row, rowIndex) =>
                     row.map((letter, colIndex) => {
                         const tilePath = foundWords.find(word => word.path.some(([r,c]) => r === rowIndex && c == colIndex))?.path
@@ -34,19 +65,18 @@ export default function GameBoard({ board, onSelect, selected, foundWords, isDra
                         
                         return(
                             <LetterTile
-                                key={`${rowIndex}-${colIndex}`}
+                                row={rowIndex}
+                                col={colIndex}
                                 letter={letter}
                                 isSelected={selected.some(([r, c]) => r === rowIndex && c === colIndex)}
                                 isFound={isInFoundWords(rowIndex, colIndex)}
                                 onClick={() => onSelect(rowIndex, colIndex)}
                                 connectTo={connectTo}
                                 foundConnectTo={foundConnectTo}
-                                onMouseDown={() => {onMouseDown(rowIndex, colIndex)}}
-                                onMouseEnter={() => {onMouseEnter(rowIndex, colIndex)}}
-                                onMouseUp={() => {onMouseUp(rowIndex, colIndex)}}
-                                onTouchStart={() => {onTouchStart(rowIndex, colIndex)}}
-                                onTouchMove={() => {onTouchMove(rowIndex, colIndex)}}
-                                onTouchEnd={() => {onTouchEnd(rowIndex, colIndex)}}
+                                onPointerDown={() => {onPointerDown(rowIndex, colIndex)}}
+                                onPointerEnter={() => {onPointerEnter(rowIndex, colIndex)}}
+                                ontouchmove={() => ontouchmove(rowIndex, colIndex)}
+                                onPointerUp={() => {onPointerUp(rowIndex, colIndex)}}
                                 isDragging={isDragging}
                                 isHinted={isHinted}
                             />
