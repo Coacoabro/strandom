@@ -7,7 +7,15 @@ export default function Layout( {children} ) {
   return (
       <div>
         <ThemeProvider>
-          {/* <TopBar /> */}
+          {/* MOBILE */}
+          <div className="absolute">
+            
+          </div>
+
+          {/* DESKTOP */}
+          <div>
+
+          </div>
           {children}
         </ThemeProvider>
       </div>

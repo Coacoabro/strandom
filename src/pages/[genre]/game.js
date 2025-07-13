@@ -222,10 +222,20 @@ export default function Game( {genre} ) {
     if (gameInfo){
 
         return (
-            <main className="flex min-h-screen flex-col items-center justify-center p-6">
+            <main className="flex min-h-screen flex-col items-center justify-center py-2 sm:p-6">
                 <div className="max-w-7xl mx-auto">
-                    <div className="text-center h-24 py-2 px-4 text-3xl font-bold">
-                        {title}
+                    <div className="text-center sm:h-24 py-2 px-4 text-2xl font-bold">
+                        "{title}"
+                    </div>
+                    <div className="text-center px-4 py-2 text-xl font-bold flex justify-evenly items-center">
+                        <div className={`${foundWords.length == solutionWords.length ? "text-green-400" : ""}`}>
+                            {foundWords.length} out of {solutionWords.length}
+                        </div>
+                        
+                        <div className={`font-bold ${wordFound ? "text-green-400" : ""} w-2/3`}>
+                            <WordInput letters={selected.map(([r, c]) => boardData[r][c])} />
+                            {alert}
+                        </div>
                     </div>
                     <div className="space-y-4">
                         <div className="flex justify-center">
@@ -242,16 +252,6 @@ export default function Game( {genre} ) {
                                 hintedWords={hintedWords}
                                 solutionWords={solutionWords}
                             />
-                        </div>
-                        <div className="text-center h-24 py-2 px-4 text-xl font-bold">
-                            <div className={`${foundWords.length == solutionWords.length ? "text-green-400" : ""}`}>
-                                {foundWords.length} out of {solutionWords.length}
-                            </div>
-                            {/* <WordInput letters={selected.map(([r, c]) => boardData[r][c])} /> */}
-                            <div className={`text-xl font-bold ${wordFound ? "text-green-400" : ""}`}>
-                                {alert}
-                            </div>
-
                         </div>
                         <div className="flex justify-evenly">
 
