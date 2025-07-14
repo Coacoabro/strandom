@@ -21,7 +21,7 @@ export default function LetterTile( { letter, row, col, onClick, isSelected, isF
                 data-row={row}
                 data-col={col}
                 variant="ghost"
-                className={`relative z-50 pb-1 rounded-full leading-none select-none w-12 h-12 text-3xl font-bold 
+                className={`relative z-30 pb-0.5 rounded-full leading-none select-none w-12 h-12 text-3xl font-bold 
                     ${isSelected ? "text-black hover:text-black font-bold" 
                         : isFound ? "text-black hover:text-black font-bold" 
                         : isHinted ? "text-blue-400 dark:text-blue-500" 
