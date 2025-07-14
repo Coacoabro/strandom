@@ -10,17 +10,17 @@ export default function HamburgerToggle({ isOpen, toggle }) {
     >
       {/* Top bar */}
       <motion.span
-        className="absolute w-6 h-0.5 bg-black dark:bg-white"
+        className="absolute w-8 h-0.5 bg-black dark:bg-white"
         animate={{
           rotate: isOpen ? 45 : 0,
-          y: isOpen ? 0 : -6,
+          y: isOpen ? 0 : -8,
         }}
         transition={{ type: "spring", stiffness: 400, damping: 20 }}
       />
 
       {/* Middle bar */}
       <motion.span
-        className="absolute w-6 h-0.5 bg-black dark:bg-white"
+        className="absolute w-8 h-0.5 bg-black dark:bg-white"
         animate={{
           opacity: isOpen ? 0 : 1,
           y: 0,
@@ -30,10 +30,10 @@ export default function HamburgerToggle({ isOpen, toggle }) {
 
       {/* Bottom bar */}
       <motion.span
-        className="absolute w-6 h-0.5 bg-black dark:bg-white"
+        className="absolute w-8 h-0.5 bg-black dark:bg-white"
         animate={{
           rotate: isOpen ? -45 : 0,
-          y: isOpen ? 0 : 6,
+          y: isOpen ? 0 : 8,
         }}
         transition={{ type: "spring", stiffness: 400, damping: 20 }}
       />

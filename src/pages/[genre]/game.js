@@ -223,6 +223,14 @@ export default function Game( {genre} ) {
 
         return (
             <main className="flex min-h-screen flex-col items-center justify-center py-2 sm:p-6">
+                <div className="fixed top-0 right-0 p-4 sm:hidden">
+                    <Button
+                        onClick={()=> handleHint()}
+                        className={`${guessedWords.length > allowedHint ? "animate-pulse" : ""} `}
+                    >
+                        Hint
+                    </Button>
+                </div>
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center sm:h-24 py-2 px-4 text-2xl font-bold">
                         "{title}"
@@ -253,7 +261,7 @@ export default function Game( {genre} ) {
                                 solutionWords={solutionWords}
                             />
                         </div>
-                        <div className="flex justify-evenly">
+                        <div className="justify-evenly hidden sm:flex">
 
                             <Button
                                 onClick={()=> handleHint()}
