@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import DarkMode from "@/components/DarkMode";
 import LoadingGameBoard from "@/components/Game/LoadingGameBoard";
+import GameComplete from "@/components/Game/GameComplete";
 
 export async function getServerSideProps(context) {
     const { genre } = context.params
@@ -26,7 +27,13 @@ const fetchGameData = async (genre) => {
 export default function Game( {genre} ) {
 
     const [selected, setSelected] = useState([]);
-    const [foundWords, setFoundWords] = useState([]);
+    const [foundWords, setFoundWords] = useState(() => {
+        if (typeof window !== "undefined") {
+            const saved = localStorage.getItem("foundWords");
+            return saved ? JSON.parse(saved) : [];
+        }
+        return []; // SSR fallback
+    });
     const [title, setTitle] = useState(null)
     const [boardData, setBoardData] = useState([])
     const [solutionWords, setSolutionWords] = useState([])
@@ -39,8 +46,11 @@ export default function Game( {genre} ) {
     const [pointerDown, setPointerDown] = useState(false)
     const [guessedWords, setGuessedWords] = useState([])
     const [allowedHint, setAllowedHint] = useState(2)
+    const [untilHint, setUntilHint] = useState(null)
+    const [results, setResults] = useState([])
+    const [showResults, setShowResults] = useState(false)
 
-    const touchActive = useRef(false)
+    const gameWon = foundWords.length > 0 && foundWords.length === solutionWords.length
 
     //PC
     const handleStartDrag = (row, col) => {
@@ -81,15 +91,20 @@ export default function Game( {genre} ) {
         setDidDrag(false)
     }
 
-    // LOAD PROGRESS
-    useEffect(() => {
-        const savedWords = localStorage.getItem("foundWords")
-        if (savedWords) setFoundWords(JSON.parse(savedWords))
-    }, [])
+
     // SAVE PROGRESS
     useEffect(() => {
         localStorage.setItem("foundWords", JSON.stringify(foundWords))
     }, [foundWords])
+    useEffect(() => {
+        if(gameWon) {
+            localStorage.setItem("gameWon", true)
+            setShowResults(true)
+        } 
+        
+        localStorage.setItem("results", results)
+
+    }, [gameWon, results])
 
     // DICTIONARY AND HINT
     useEffect(() => {
@@ -101,7 +116,7 @@ export default function Game( {genre} ) {
         fetchDictionary()
     }, [])
     const handleHint = () => {
-        if(guessedWords.length > allowedHint){
+        if(guessedWords.length > allowedHint && !gameWon){
             const nextHint = solutionWords.find(sol =>
                 !foundWords.some(f => f.word == sol.word)
             )
@@ -111,6 +126,8 @@ export default function Game( {genre} ) {
             }
             setHintedWords([...hintedWords, nextHint.word])
             setAllowedHint(allowedHint + 3)
+            setUntilHint(3)
+            setResults([...results, "❓"])
         }
     }
 
@@ -148,6 +165,7 @@ export default function Game( {genre} ) {
             ]);
             setWordFound(true)
             setAlert(word)
+            setResults([...results, "✔️"])
         } else if (validWords && validWords[word.toLowerCase()] && selected.length > 3) {
             const guess = word.toLowerCase()
             if (guessedWords.includes(guess)){
@@ -155,6 +173,7 @@ export default function Game( {genre} ) {
             } else {
                 setAlert("Good try!")
                 setGuessedWords([...guessedWords, guess])
+                setUntilHint(allowedHint - guessedWords.length)
             }
         } else if (selected.length > 3) {
             setAlert("Not a word!")
@@ -223,17 +242,27 @@ export default function Game( {genre} ) {
 
         return (
             <main className="flex min-h-screen flex-col items-center justify-center py-2 sm:p-6">
-                <div className="fixed top-0 right-0 p-4 sm:hidden">
-                    <Button
-                        onClick={()=> handleHint()}
-                        className={`${guessedWords.length > allowedHint ? "animate-pulse" : ""} `}
-                    >
-                        Hint
-                    </Button>
-                </div>
                 <div className="max-w-7xl mx-auto">
-                    <div className="text-center sm:h-24 py-2 px-4 text-2xl font-bold">
-                        "{title}"
+                    <div className="flex items-center justify-center">
+                        <div className="text-center sm:h-24 py-2 px-4 text-2xl font-bold">
+                            <span>"{title}"</span>
+                            <Button
+                                onClick={()=> handleHint()}
+                                className={`
+                                    ${guessedWords.length > allowedHint ? "animate-pulse" : ""} 
+                                    ${untilHint == 3 ? "text-sm" 
+                                        : untilHint == 2 ? "text-base" 
+                                        : untilHint == 1 ? "text-lg"
+                                        : untilHint <= 0 ? "text-xl"
+                                        : "text-sm"
+                                    }
+                                    absolute right-4
+                                    sm:hidden
+                                `}
+                            >
+                                Hint
+                            </Button>
+                        </div>
                     </div>
                     <div className="text-center px-4 py-2 text-xl font-bold flex justify-evenly items-center">
                         <div className={`${foundWords.length == solutionWords.length ? "text-green-400" : ""}`}>
@@ -245,7 +274,7 @@ export default function Game( {genre} ) {
                             {alert}
                         </div>
                     </div>
-                    <div className="space-y-4">
+                    <div className={`${showResults ? "blur-sm" : ""} space-y-4 transition-all duration-300`}>
                         <div className="flex justify-center">
                             <GameBoard 
                                 board={boardData} 
@@ -285,8 +314,29 @@ export default function Game( {genre} ) {
 
                         </div>
 
+                        <div className={`${gameWon ? "" : "hidden"} flex justify-center`}>
+                            <Button className="text-xl px-4 py-6" onClick={() => {setShowResults(true)}}>
+                                Show Results
+                            </Button>
+                        </div>
+
 
                     </div>
+                    <div className={`${gameWon && showResults ? "" : "hidden"} w-[360px] fixed top-1/3 z-50 right-0.5 sm:right-[40.5%]`}>
+                        <GameComplete title={title} results={results} setShowResults={setShowResults} />
+                    </div>
+
+                    <Button
+                        onClick={() => {
+                            localStorage.removeItem("foundWords");
+                            setFoundWords([]);
+                            setGuessedWords([])
+                            setAlert(null);
+                        }}
+                        className="sm:hidden scale-75"
+                    >
+                        Reset Progress
+                    </Button>
                     
                 </div>
             </main>
