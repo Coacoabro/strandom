@@ -32,7 +32,14 @@ export default function Game( {genre} ) {
             const saved = localStorage.getItem("foundWords");
             return saved ? JSON.parse(saved) : [];
         }
-        return []; // SSR fallback
+        return [];
+    });
+    const [results, setResults] = useState(() => {
+        if (typeof window !== "undefined") {
+            const saved = localStorage.getItem("results");
+            return saved ? saved.split(",") : [];
+        }
+        return [];
     });
     const [title, setTitle] = useState(null)
     const [boardData, setBoardData] = useState([])
@@ -47,8 +54,6 @@ export default function Game( {genre} ) {
     const [guessedWords, setGuessedWords] = useState([])
     const [allowedHint, setAllowedHint] = useState(2)
     const [untilHint, setUntilHint] = useState(null)
-    const [results, setResults] = useState([])
-    const [showResults, setShowResults] = useState(false)
 
     const gameWon = foundWords.length > 0 && foundWords.length === solutionWords.length
 
@@ -99,10 +104,9 @@ export default function Game( {genre} ) {
     useEffect(() => {
         if(gameWon) {
             localStorage.setItem("gameWon", true)
-            setShowResults(true)
         } 
         
-        localStorage.setItem("results", results)
+        localStorage.setItem("results", results.join(","))
 
     }, [gameWon, results])
 
@@ -232,7 +236,7 @@ export default function Game( {genre} ) {
 
     if (isLoading) {
         return(
-            <div className="flex min-h-screen flex-col items-center justify-center p-6">
+            <div className="flex min-h-screen flex-col items-center justify-center sm:p-6">
                 <LoadingGameBoard />
             </div>
         )
@@ -246,6 +250,7 @@ export default function Game( {genre} ) {
                     <div className="flex items-center justify-center">
                         <div className="text-center sm:h-24 py-2 px-4 text-2xl font-bold">
                             <span>"{title}"</span>
+                            <div className="font-medium opacity-50 text-xl">Gaming #1</div>
                             <Button
                                 onClick={()=> handleHint()}
                                 className={`
@@ -256,7 +261,7 @@ export default function Game( {genre} ) {
                                         : untilHint <= 0 ? "text-xl"
                                         : "text-sm"
                                     }
-                                    absolute right-4
+                                    fixed top-4 right-4
                                     sm:hidden
                                 `}
                             >
@@ -274,7 +279,7 @@ export default function Game( {genre} ) {
                             {alert}
                         </div>
                     </div>
-                    <div className={`${showResults ? "blur-sm" : ""} space-y-4 transition-all duration-300`}>
+                    <div className={`space-y-4 transition-all duration-300`}>
                         <div className="flex justify-center">
                             <GameBoard 
                                 board={boardData} 
@@ -290,50 +295,44 @@ export default function Game( {genre} ) {
                                 solutionWords={solutionWords}
                             />
                         </div>
-                        <div className="justify-evenly hidden sm:flex">
+                        <div className="justify-between hidden sm:flex px-4">
 
                             <Button
                                 onClick={()=> handleHint()}
-                                className={`${guessedWords.length > allowedHint ? "animate-pulse" : ""} `}
+                                className={`${guessedWords.length > allowedHint ? "animate-pulse" : ""} text-xl`}
                             >
                                 Hint
                             </Button>
 
-                            <Button
-                                onClick={() => {
-                                    localStorage.removeItem("foundWords");
-                                    setFoundWords([]);
-                                    setGuessedWords([])
-                                    setAlert(null);
-                                }}
-                            >
-                                Reset Progress
-                            </Button>
+                            {gameWon && (
+                                <GameComplete title={title} results={results} />
+                            )}
 
-                            <DarkMode />
+                            
 
-                        </div>
-
-                        <div className={`${gameWon ? "" : "hidden"} flex justify-center`}>
-                            <Button className="text-xl px-4 py-6" onClick={() => {setShowResults(true)}}>
-                                Show Results
-                            </Button>
                         </div>
 
 
                     </div>
-                    <div className={`${gameWon && showResults ? "" : "hidden"} w-[360px] fixed top-1/3 z-50 right-0.5 sm:right-[40.5%]`}>
-                        <GameComplete title={title} results={results} setShowResults={setShowResults} />
+
+
+                    <div className="flex justify-center sm:hidden">
+                        {gameWon && (
+                            <GameComplete title={title} results={results} />
+                        )}
                     </div>
+                    
 
                     <Button
                         onClick={() => {
                             localStorage.removeItem("foundWords");
+                            localStorage.removeItem("results")
                             setFoundWords([]);
                             setGuessedWords([])
+                            setResults([])
                             setAlert(null);
                         }}
-                        className="sm:hidden scale-75"
+                        className="scale-75"
                     >
                         Reset Progress
                     </Button>
