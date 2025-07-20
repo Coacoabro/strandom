@@ -22,22 +22,22 @@ export default function Home() {
             </p>
             <div className="grid grid-cols-2">
               <div className="py-2 flex justify-evenly items-center">
-                <Button asChild className="px-4 py-2 rounded-xl">
+                <Button asChild className="px-4 py-2 rounded-xl hover:scale-105">
                     <Link href="/gaming/game">Gaming</Link>
                 </Button>
               </div>
               {/* <div className="py-2 flex justify-evenly items-center">
-                <Button asChild className="px-4 py-2 rounded-xl">
+                <Button asChild className="px-4 py-2 rounded-xl hover:scale-105">
                     <Link href="/anime/game">Anime</Link>
                 </Button>
               </div> */}
               <div className="py-2 flex justify-evenly items-center">
-                <Button asChild className="px-4 py-2 rounded-xl">
+                <Button asChild className="px-4 py-2 rounded-xl hover:scale-105">
                     <Link href="/screen/game">Movies & Shows</Link>
                 </Button>
               </div>
               {/* <div className="py-2 flex justify-evenly items-center">
-                <Button asChild className="px-4 py-2 rounded-xl">
+                <Button asChild className="px-4 py-2 rounded-xl hover:scale-105">
                     <Link href="/comics/game">Comics</Link>
                 </Button>
               </div> */}
