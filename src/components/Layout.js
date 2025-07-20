@@ -7,12 +7,54 @@ import DarkMode from "./DarkMode";
 import DropDown from "./DropDown"
 import Link from "next/link";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { useRouter } from "next/router";
+import LoadingScreen from "./LoadingScreen";
 
 export default function Layout( {children} ) {
 
   const [menuOpen, setMenuOpen] = useState(false)
   const [dropDown, setDropDown] = useState(false)
   const menuRef = useRef()
+
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false)
+  
+
+  useEffect(() => {
+
+    const handleStart = (url) => {
+      const current = new URL(window.location.href);
+      const next = new URL(url, window.location.origin);
+
+      const pathnameChanged = next.pathname !== current.pathname;
+
+      const currentRank = current.searchParams.get("rank");
+      const currentPatch = current.searchParams.get("patch");
+      const nextRank = next.searchParams.get("rank");
+      const nextPatch = next.searchParams.get("patch");
+
+      const rankChanged = currentRank !== nextRank;
+      const patchChanged = currentPatch !== nextPatch;
+
+      if (pathnameChanged || rankChanged || patchChanged) {
+        setIsLoading(true);
+      }
+    };
+
+    const handleComplete = () => {
+      setIsLoading(false);
+    };
+
+    router.events.on('routeChangeStart', handleStart);
+    router.events.on('routeChangeComplete', handleComplete);
+    router.events.on('routeChangeError', handleComplete);
+
+    return () => {
+      router.events.off('routeChangeStart', handleStart);
+      router.events.off('routeChangeComplete', handleComplete);
+      router.events.off('routeChangeError', handleComplete);
+    };
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -75,9 +117,9 @@ export default function Layout( {children} ) {
               </div>
 
             </div>
-            <div className={`transition-all duration-200 ${menuOpen ? "blur-xs" : ""}`}>
-              {children}
-            </div>
+            
+            {isLoading ? <LoadingScreen /> : (<div className={`transition-all duration-200 ${menuOpen ? "blur-xs" : ""}`}>{children}</div>)}
+
           </div>
 
           {/* DESKTOP */}
@@ -97,7 +139,7 @@ export default function Layout( {children} ) {
                       
                       <TooltipTrigger>
                         <Link href="/howtoplay">
-                          <img src="/questionmark.svg" className="w-8 dark:invert"/>
+                          <img src="/questionmark.svg" className="w-7 dark:invert"/>
                         </Link>
                       </TooltipTrigger>
 
@@ -107,7 +149,8 @@ export default function Layout( {children} ) {
               </div>
             </div>
 
-            {children}
+            {isLoading ? <LoadingScreen /> : children}
+
           </div>
 
         </ThemeProvider>

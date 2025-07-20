@@ -26,7 +26,7 @@ export default function DropdownMenuCheckboxes() {
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <button className="hover:scale-110 transition-all duration-400 dark:invert" onClick={()=> setDropDown(true)}>
-                    <img src="/cogwheel.svg" className="w-12" />
+                    <img src="/cogwheel.svg" className="w-10" />
                 </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
