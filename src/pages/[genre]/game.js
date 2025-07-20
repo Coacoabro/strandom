@@ -1,6 +1,7 @@
 // pages/game.js
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from '@tanstack/react-query'
+import { AnimatePresence, motion } from "framer-motion"
 import GameBoard from "@/components/Game/GameBoard";
 import WordInput from "@/components/Game/WordInput";
 import { Card } from "@/components/ui/card";
@@ -34,6 +35,13 @@ export default function Game( {genre} ) {
         }
         return [];
     });
+    const [hintedWords, setHintedWords] = useState(() => {
+        if (typeof window !== "undefined") {
+            const saved = localStorage.getItem("hintedWords");
+            return saved ? saved.split(",") : [];
+        }
+        return [];
+    })
     const [results, setResults] = useState(() => {
         if (typeof window !== "undefined") {
             const saved = localStorage.getItem("results");
@@ -41,19 +49,29 @@ export default function Game( {genre} ) {
         }
         return [];
     });
+    const [goldAmount, setGoldAmount] = useState(() => {
+        if (typeof window !== "undefined") {
+            const saved = localStorage.getItem("gold");
+            return saved ? Number(saved) : 0
+        }
+        return 0;
+    });
+    const [goldGained, setGoldGained] = useState(0)
+
     const [title, setTitle] = useState(null)
     const [boardData, setBoardData] = useState([])
     const [solutionWords, setSolutionWords] = useState([])
     const [validWords, setValidWords] = useState(null)
     const [alert, setAlert] = useState(null)
     const [wordFound, setWordFound] = useState(false)
-    const [hintedWords, setHintedWords] = useState([])
+    const [showResults, setShowResults] = useState(false)
+    
     const [isDragging, setIsDragging] = useState(false)
     const [didDrag, setDidDrag] = useState(false)
     const [pointerDown, setPointerDown] = useState(false)
     const [guessedWords, setGuessedWords] = useState([])
-    const [allowedHint, setAllowedHint] = useState(2)
-    const [untilHint, setUntilHint] = useState(null)
+
+    const [alreadyOpened, setAlreadyOpened] = useState(false)
 
     const gameWon = foundWords.length > 0 && foundWords.length === solutionWords.length
 
@@ -99,16 +117,16 @@ export default function Game( {genre} ) {
 
     // SAVE PROGRESS
     useEffect(() => {
-        localStorage.setItem("foundWords", JSON.stringify(foundWords))
-    }, [foundWords])
-    useEffect(() => {
         if(gameWon) {
             localStorage.setItem("gameWon", true)
         } 
-        
-        localStorage.setItem("results", results.join(","))
 
-    }, [gameWon, results])
+        localStorage.setItem("foundWords", JSON.stringify(foundWords))
+        localStorage.setItem("results", results.join(","))
+        localStorage.setItem("hintedWords", hintedWords.join(","))
+        localStorage.setItem("gold", goldAmount)
+
+    }, [foundWords, gameWon, results, goldAmount, hintedWords])
 
     // DICTIONARY AND HINT
     useEffect(() => {
@@ -120,7 +138,7 @@ export default function Game( {genre} ) {
         fetchDictionary()
     }, [])
     const handleHint = () => {
-        if(guessedWords.length > allowedHint && !gameWon){
+        if(goldAmount > 15 && !gameWon){
             const nextHint = solutionWords.find(sol =>
                 !foundWords.some(f => f.word == sol.word)
             )
@@ -129,9 +147,10 @@ export default function Game( {genre} ) {
                 return
             }
             setHintedWords([...hintedWords, nextHint.word])
-            setAllowedHint(allowedHint + 3)
-            setUntilHint(3)
+            setGoldAmount(goldAmount - 15)
             setResults([...results, "❓"])
+            setGoldGained("-15")
+            setTimeout(() => setGoldGained(0), 400)
         }
     }
 
@@ -169,15 +188,25 @@ export default function Game( {genre} ) {
             ]);
             setWordFound(true)
             setAlert(word)
+            if(results[results.length - 1] == "✔️") {
+                setGoldAmount(goldAmount + word.length + 3)
+                setGoldGained(`+${word.length + 3}`)
+
+                setTimeout(() => setGoldGained(0), 400)
+            }
             setResults([...results, "✔️"])
-        } else if (validWords && validWords[word.toLowerCase()] && selected.length > 3) {
+        } else if (validWords && validWords[word.toLowerCase()] && selected.length > 3 && !gameWon) {
             const guess = word.toLowerCase()
             if (guessedWords.includes(guess)){
                 setAlert("Already guessed!")
             } else {
-                setAlert("Good try!")
                 setGuessedWords([...guessedWords, guess])
-                setUntilHint(allowedHint - guessedWords.length)
+                setGoldAmount(goldAmount + guess.length)
+                setGoldGained(`+${word.length}`)
+                setTimeout(() => setGoldGained(0), 400)
+                if(guess.length < 6 ) {setAlert("Nice try!")}
+                else if (guess.length < 8) {setAlert("Thats a pretty good word!")}
+                else {setAlert("Wow! Thats a big word!")}
             }
         } else if (selected.length > 3) {
             setAlert("Not a word!")
@@ -234,6 +263,14 @@ export default function Game( {genre} ) {
         }
     }, [gameInfo])
 
+    // GAME WON
+    useEffect(() => {
+        if(gameWon && !alreadyOpened) {
+            setShowResults(true)
+            setAlreadyOpened(true)
+        }
+    }, [gameWon, alreadyOpened])
+
     if (isLoading) {
         return(
             <div className="flex min-h-screen flex-col items-center justify-center sm:p-6">
@@ -247,34 +284,59 @@ export default function Game( {genre} ) {
         return (
             <main className="flex min-h-screen flex-col items-center justify-center py-2 sm:p-6">
                 <div className="max-w-7xl mx-auto">
+
+                    <div className="absolute top-14 flex text-xl font-bold sm:hidden">
+                        <AnimatePresence>
+                            {goldGained !== 0 && (
+                                <motion.div
+                                    key="gain"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: -20 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.6 }}
+                                    className="text-xl font-bold absolute"
+                                >
+                                    {goldGained}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
+                        <div className="text-xl font-bold">🪙{goldAmount}</div>
+                    </div>
                     <div className="flex items-center justify-center">
                         <div className="text-center sm:h-24 py-2 px-4 text-2xl font-bold">
                             <span>"{title}"</span>
-                            <div className="font-medium opacity-50 text-xl">Gaming #1</div>
-                            <Button
-                                onClick={()=> handleHint()}
-                                className={`
-                                    ${guessedWords.length > allowedHint ? "animate-pulse" : ""} 
-                                    ${untilHint == 3 ? "text-sm" 
-                                        : untilHint == 2 ? "text-base" 
-                                        : untilHint == 1 ? "text-lg"
-                                        : untilHint <= 0 ? "text-xl"
-                                        : "text-sm"
-                                    }
-                                    fixed top-4 right-4
-                                    sm:hidden
-                                `}
-                            >
-                                Hint
-                            </Button>
+                            <div className="font-medium opacity-50 text-xl">{genre.charAt(0).toUpperCase() + genre.slice(1)} #1</div>
+                            <div className="absolute top-13 right-4 sm:hidden">
+                                <Button onClick={()=> handleHint()} className="text-xs px-2 gap-0.5">
+                                    <motion.span 
+                                        style={{
+                                            transformStyle: "preserve-3d",
+                                            perspective: 1000
+                                        }}
+                                        animate={ goldAmount > 15 ? 
+                                            { rotateY: [0, 360] }
+                                            : { rotateY: 0 }
+                                        }
+                                        transition={{
+                                            repeat: Infinity,
+                                            duration: 3,
+                                            ease: "linear"
+                                        }}
+                                    >
+                                        🪙
+                                    </motion.span>                                 
+                                    15 - Hint
+                                </Button>
+                            </div>
                         </div>
                     </div>
-                    <div className="text-center px-4 py-2 text-xl font-bold flex justify-evenly items-center">
-                        <div className={`${foundWords.length == solutionWords.length ? "text-green-400" : ""}`}>
-                            {foundWords.length} out of {solutionWords.length}
+                    <div className="text-center px-2 py-2 text-xl font-bold flex justify-between items-end">
+                        <div className={`${foundWords.length == solutionWords.length ? "text-green-400" : ""} w-1/4 text-sm`}>
+                            Words - {foundWords.length}/{solutionWords.length}
                         </div>
                         
-                        <div className={`font-bold ${wordFound ? "text-green-400" : ""} w-2/3`}>
+                        <div className={`font-bold ${wordFound ? "text-green-400" : ""} w-3/4 text-center h-6`}>
                             <WordInput letters={selected.map(([r, c]) => boardData[r][c])} />
                             {alert}
                         </div>
@@ -297,40 +359,67 @@ export default function Game( {genre} ) {
                         </div>
                         <div className="justify-between hidden sm:flex px-4">
 
-                            <Button
-                                onClick={()=> handleHint()}
-                                className={`${guessedWords.length > allowedHint ? "animate-pulse" : ""} text-xl`}
-                            >
-                                Hint
+                            <Button onClick={()=> handleHint()} className="text-xs px-2 gap-0.5">
+                                <motion.span 
+                                    style={{
+                                        transformStyle: "preserve-3d",
+                                        perspective: 1000
+                                    }}
+                                    animate={ goldAmount > 15 ? 
+                                        { rotateY: [0, 360] }
+                                        : { rotateY: 0 }
+                                    }
+                                    transition={{
+                                        repeat: Infinity,
+                                        duration: 3,
+                                        ease: "linear"
+                                    }}
+                                >
+                                    🪙
+                                </motion.span>                                 
+                                15 - Hint
                             </Button>
 
-                            {gameWon && (
-                                <GameComplete title={title} results={results} />
-                            )}
+                            <div>
+                                <AnimatePresence>
+                                    {goldGained !== 0 && (
+                                        <motion.div
+                                            key="gain"
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: -20 }}
+                                            exit={{ opacity: 0 }}
+                                            transition={{ duration: 0.6 }}
+                                            className="text-xl font-bold absolute"
+                                        >
+                                            {goldGained}
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
 
-                            
+                                <div className="text-xl font-bold">🪙{goldAmount}</div>
+                            </div>
 
                         </div>
-
 
                     </div>
 
 
-                    <div className="flex justify-center sm:hidden">
-                        {gameWon && (
-                            <GameComplete title={title} results={results} />
-                        )}
+                    <div className="flex justify-center">
+                        <GameComplete title={title} results={results} gameWon={gameWon} />
                     </div>
                     
 
                     <Button
                         onClick={() => {
-                            localStorage.removeItem("foundWords");
+                            localStorage.removeItem("foundWords")
                             localStorage.removeItem("results")
-                            setFoundWords([]);
+                            localStorage.removeItem("resultsDrawerShown")
+                            setFoundWords([])
                             setGuessedWords([])
+                            setHintedWords([])
                             setResults([])
-                            setAlert(null);
+                            setAlert(null)
+                            setGoldAmount(0)
                         }}
                         className="scale-75"
                     >

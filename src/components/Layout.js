@@ -76,7 +76,7 @@ export default function Layout( {children} ) {
         <ThemeProvider>
           {/* MOBILE */}
           <div className="sm:hidden">
-            <div ref={menuRef} className="fixed top-0 left-0 z-50 flex items-start">
+            <div ref={menuRef} className="absolute top-0 left-0 z-50 flex items-start">
 
               <AnimatePresence>
                 {menuOpen && (

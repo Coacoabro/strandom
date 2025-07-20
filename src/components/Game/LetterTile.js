@@ -71,11 +71,11 @@ function connectorClass(dir, isFound, above) {
         case "up":
             return `${base} ${color} w-4 h-6 right-[37%] top-[94%]`;
         case "down-right":
-            return `${base} ${color} w-13 h-4 rotate-45 -top-1/3 -left-[55%]`;
+            return `${base} ${color} w-12 h-4 rotate-45 -top-1/3 -left-[60%]`;
         case "down-left":
-            return `${base} ${color} w-13 h-4 -rotate-45 -top-1/3 left-[60%]`;
+            return `${base} ${color} w-12 h-4 -rotate-45 -top-1/3 left-[65%]`;
         case "up-right":
-            return `${base} ${color} w-13 h-4 -rotate-45 -left-[47%]`;
+            return `${base} ${color} w-12 h-4 -rotate-45 -left-[50%]`;
         case "up-left":
             return `${base} ${color} w-13 h-4 rotate-45 left-[52%]`;
         default:

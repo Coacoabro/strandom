@@ -8,11 +8,13 @@ export default function LoadingScreen() {
     
     useEffect(() => {
         const firstTimer = setTimeout(() => setProgress(20), 150)
-        const secondTimer = setTimeout(() => setProgress(75), 300) // 700ms after first
+        const secondTimer = setTimeout(() => setProgress(75), 300)
+        const thirdTimer = setTimeout(() => setProgress(90), 750)
 
         return () => {
         clearTimeout(firstTimer)
         clearTimeout(secondTimer)
+        clearTimeout(thirdTimer)
         }
     }, [])
 
