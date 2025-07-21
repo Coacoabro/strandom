@@ -424,7 +424,7 @@ export default function Game( {genre} ) {
 
                     
 
-                    <Button
+                    {/* <Button
                         onClick={() => {
                             localStorage.removeItem("foundWords")
                             localStorage.removeItem("results")
@@ -439,7 +439,7 @@ export default function Game( {genre} ) {
                         className="scale-75"
                     >
                         Reset Progress
-                    </Button>
+                    </Button> */}
                     
                 </div>
                 
