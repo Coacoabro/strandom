@@ -9,6 +9,7 @@ import Link from "next/link";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { useRouter } from "next/router";
 import LoadingScreen from "./LoadingScreen";
+import HowToPlay from "./HowToPlay/HowToPlay";
 
 export default function Layout( {children} ) {
 
@@ -101,10 +102,6 @@ export default function Layout( {children} ) {
                     </nav>
 
                     <div className="p-4 border-t border-gray-200 dark:border-gray-800 space-y-6 whitespace-nowrap">
-                      <Link href="/howtoplay" className="block hover:underline scale-125 ml-6 flex items-center gap-3" onClick={()=> setMenuOpen(false)}>
-                        <img src="/questionmark.svg" className="w-6 dark:invert ml-1.5" /> 
-                        How To Play
-                      </Link>
                       <DarkMode />
                     </div>
 
@@ -116,6 +113,10 @@ export default function Layout( {children} ) {
                 <HamburgerToggle isOpen={menuOpen} toggle={()=> setMenuOpen(!menuOpen)} />
               </div>
 
+            </div>
+
+            <div className={`absolute right-4 top-4 ${menuOpen ? "blur-xs" : ""}`}>
+              <HowToPlay />
             </div>
             
             {isLoading ? <LoadingScreen /> : (<div className={`transition-all duration-200 ${menuOpen ? "blur-xs" : ""}`}>{children}</div>)}
@@ -138,9 +139,7 @@ export default function Layout( {children} ) {
                     <Tooltip>
                       
                       <TooltipTrigger>
-                        <Link href="/howtoplay">
-                          <img src="/questionmark.svg" className="w-7 dark:invert"/>
-                        </Link>
+                        <HowToPlay />
                       </TooltipTrigger>
 
                       <TooltipContent className="text-lg">How to Play</TooltipContent>

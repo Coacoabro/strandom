@@ -289,7 +289,7 @@ export default function Game( {genre} ) {
             <main className="flex min-h-screen flex-col items-center justify-center py-2 sm:p-6">
                 <div className="max-w-7xl mx-auto">
 
-                    <div className="absolute top-14 flex text-xl font-bold sm:hidden">
+                    <div className="absolute top-28 flex text-xl font-bold sm:hidden">
                         <AnimatePresence>
                             {goldGained !== 0 && (
                                 <motion.div
@@ -311,14 +311,14 @@ export default function Game( {genre} ) {
                         <div className="text-center sm:h-24 py-2 px-4 text-2xl font-bold">
                             <span>"{title}"</span>
                             <div className="font-medium opacity-50 text-xl">{genre.charAt(0).toUpperCase() + genre.slice(1)} #1</div>
-                            <div className="absolute top-13 right-4 sm:hidden">
-                                <Button onClick={()=> handleHint()} className="text-xs px-2 gap-0.5">
+                            <div className="absolute top-28 right-2 sm:hidden">
+                                <Button onClick={()=> handleHint()} className={`text-xs px-2 gap-0.5 ${goldAmount >= 15 ? "" : ""}`}>
                                     <motion.span 
                                         style={{
                                             transformStyle: "preserve-3d",
                                             perspective: 1000
                                         }}
-                                        animate={ goldAmount > 15 ? 
+                                        animate={ goldAmount >= 15 ? 
                                             { rotateY: [0, 360] }
                                             : { rotateY: 0 }
                                         }
@@ -374,7 +374,7 @@ export default function Game( {genre} ) {
                                         transformStyle: "preserve-3d",
                                         perspective: 1000
                                     }}
-                                    animate={ goldAmount > 15 ? 
+                                    animate={ goldAmount >= 15 ? 
                                         { rotateY: [0, 360] }
                                         : { rotateY: 0 }
                                     }
