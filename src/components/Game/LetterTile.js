@@ -3,9 +3,20 @@ import { Button } from "../ui/button"
 import { useState } from "react";
 import { motion } from "framer-motion"
 
+const sharedSpring = {
+    type: "spring",
+    stiffness: 300,
+    damping: 20,
+    mass: 1,
+    duration: 0.25
+}
+
+const connectorSpring = {
+    ...sharedSpring,
+    delay: 5
+}
 
 export default function LetterTile( { letter, row, col, onClick, isSelected, isFound, connectTo, foundConnectTo, onPointerDown, onPointerEnter, onPointerUp, isDragging, isHinted  }) {
- 
     
     return (
         <div className="relative text-center w-full h-full transition-all transition-colors duration-200">
@@ -17,7 +28,7 @@ export default function LetterTile( { letter, row, col, onClick, isSelected, isF
                     : "rgba(0,0,0,0)",
                     scale: isSelected ? 1.05 : 1,
                 }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                transition={sharedSpring}
                 data-row={row}
                 data-col={col}
                 variant="ghost"
@@ -39,7 +50,7 @@ export default function LetterTile( { letter, row, col, onClick, isSelected, isF
                 <motion.div
                     className={cn(connectorClass(foundConnectTo, isFound, true))}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    transition={connectorSpring}
                 />
             )}
 
@@ -47,7 +58,7 @@ export default function LetterTile( { letter, row, col, onClick, isSelected, isF
                 <motion.div
                     className={cn(connectorClass(connectTo, false, false))}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    transition={connectorSpring}
                 />
             )}
 

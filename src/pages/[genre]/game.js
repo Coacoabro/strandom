@@ -64,7 +64,6 @@ export default function Game( {genre} ) {
     const [validWords, setValidWords] = useState(null)
     const [alert, setAlert] = useState(null)
     const [wordFound, setWordFound] = useState(false)
-    const [showResults, setShowResults] = useState(false)
     
     const [isDragging, setIsDragging] = useState(false)
     const [didDrag, setDidDrag] = useState(false)
@@ -188,25 +187,31 @@ export default function Game( {genre} ) {
             ]);
             setWordFound(true)
             setAlert(word)
-            if(results[results.length - 1] == "✔️") {
+            if(results[results.length - 1] == "✅" || results.length == 0) {
+                setGuessedWords([...guessedWords, word])
                 setGoldAmount(goldAmount + word.length + 3)
                 setGoldGained(`+${word.length + 3}`)
 
                 setTimeout(() => setGoldGained(0), 400)
             }
-            setResults([...results, "✔️"])
-        } else if (validWords && validWords[word.toLowerCase()] && selected.length > 3 && !gameWon) {
-            const guess = word.toLowerCase()
-            if (guessedWords.includes(guess)){
-                setAlert("Already guessed!")
-            } else {
-                setGuessedWords([...guessedWords, guess])
-                setGoldAmount(goldAmount + guess.length)
-                setGoldGained(`+${word.length}`)
-                setTimeout(() => setGoldGained(0), 400)
-                if(guess.length < 6 ) {setAlert("Nice try!")}
-                else if (guess.length < 8) {setAlert("Thats a pretty good word!")}
-                else {setAlert("Wow! Thats a big word!")}
+            setResults([...results, "✅"])
+        } else if (validWords && validWords[word.toLowerCase()] && selected.length > 3) {
+            if (gameWon){
+                setAlert("Wha..? You won already")
+            }
+            else{
+                const guess = word.toLowerCase()
+                if (guessedWords.includes(guess)){
+                    setAlert("Already guessed!")
+                } else {
+                    setGuessedWords([...guessedWords, guess])
+                    setGoldAmount(goldAmount + guess.length)
+                    setGoldGained(`+${word.length}`)
+                    setTimeout(() => setGoldGained(0), 400)
+                    if(guess.length < 6 ) {setAlert("Nice try!")}
+                    else if (guess.length < 8) {setAlert("Thats a pretty good word!")}
+                    else {setAlert("Wow! Thats a big word!")}
+                }
             }
         } else if (selected.length > 3) {
             setAlert("Not a word!")
@@ -266,7 +271,6 @@ export default function Game( {genre} ) {
     // GAME WON
     useEffect(() => {
         if(gameWon && !alreadyOpened) {
-            setShowResults(true)
             setAlreadyOpened(true)
         }
     }, [gameWon, alreadyOpened])
@@ -332,7 +336,12 @@ export default function Game( {genre} ) {
                         </div>
                     </div>
                     <div className="text-center px-2 py-2 text-xl font-bold flex justify-between items-end">
-                        <div className={`${foundWords.length == solutionWords.length ? "text-green-400" : ""} w-1/4 text-sm`}>
+                        <div className={`${foundWords.length == solutionWords.length ? "text-green-400" : ""} w-1/4 text-lg hidden sm:block`}>
+                            <p>Words</p>
+                            <p>{foundWords.length}/{solutionWords.length}</p>
+                        </div>
+
+                        <div className={`${foundWords.length == solutionWords.length ? "text-green-400" : ""} w-1/4 text-sm sm:hidden`}>
                             Words - {foundWords.length}/{solutionWords.length}
                         </div>
                         
@@ -380,6 +389,10 @@ export default function Game( {genre} ) {
                                 15 - Hint
                             </Button>
 
+                            {gameWon && (<div className="flex justify-center">
+                                <GameComplete title={title} results={results} gameWon={gameWon} goldAmount={goldAmount} />
+                            </div>)}
+
                             <div>
                                 <AnimatePresence>
                                     {goldGained !== 0 && (
@@ -403,10 +416,12 @@ export default function Game( {genre} ) {
 
                     </div>
 
+                    {gameWon && (<div className="flex justify-center sm:hidden">
+                        <GameComplete title={title} results={results} gameWon={gameWon} goldAmount={goldAmount} />
+                    </div>)}
 
-                    <div className="flex justify-center">
-                        <GameComplete title={title} results={results} gameWon={gameWon} />
-                    </div>
+
+
                     
 
                     <Button
@@ -427,6 +442,7 @@ export default function Game( {genre} ) {
                     </Button>
                     
                 </div>
+                
             </main>
         );
     }

@@ -35,7 +35,7 @@ export default function GameBoard({ board, onSelect, selected, foundWords, isDra
         ) 
 
     return (
-        <Card className="w-[340px] py-3 px-1">
+        <Card className="w-[350px] py-3 px-2">
             <div 
                 className="grid grid-cols-6 gap-x-1 gap-y-3 touch-none"
                 ref={containerRef}
