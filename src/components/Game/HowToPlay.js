@@ -31,7 +31,7 @@ export default function HowToPlay(){
                     <TabsContent value="themes">
                         <p className="opacity-80">
                             <h1>Each day has a unique theme depending on the genre! Words can be anything from characters, weapons, or even quotes. </h1>
-                            <h2>Current genres are <Link href="/gaming/game" className="text-cyan-600 dark:text-cyan-300 font-bold hover:underline" onClick={()=> setOpen(false)}>Video Games</Link> and <Link href="/screen/game" className="text-cyan-600 dark:text-cyan-300 font-bold hover:underline" onClick={()=> setOpen(false)}>Movies/Shows</Link>. More genres to come!</h2>
+                            <h2>Current genres are <Link href="/gaming/game" className="text-cyan-600 dark:text-cyan-300 font-bold hover:underline" onClick={()=> setOpen(false)}>Video Games</Link>, <Link href="/shows/game" className="text-cyan-600 dark:text-cyan-300 font-bold hover:underline" onClick={()=> setOpen(false)}>Shows</Link> and <Link href="/movies/game" className="text-cyan-600 dark:text-cyan-300 font-bold hover:underline" onClick={()=> setOpen(false)}>Movies</Link>. More genres to come!</h2>
                         </p>
                     </TabsContent>
                     <TabsList>

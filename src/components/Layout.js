@@ -9,7 +9,7 @@ import Link from "next/link";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { useRouter } from "next/router";
 import LoadingScreen from "./LoadingScreen";
-import HowToPlay from "./HowToPlay/HowToPlay";
+import HowToPlay from "./Game/HowToPlay";
 import { Toaster } from "@/components/ui/sonner";
 
 export default function Layout( {children} ) {
@@ -97,8 +97,8 @@ export default function Layout( {children} ) {
 
                     <nav className="flex-1 p-4 space-y-8 text-xl text-black dark:text-white">
                       <Link href="/gaming/game" className="block hover:underline" onClick={()=> setMenuOpen(false)}>Gaming</Link>
-                      {/* <Link href="/anime/game" className="block hover:underline" onClick={()=> setMenuOpen(false)}>Anime</Link> */}
-                      <Link href="/screen/game" className="block hover:underline" onClick={()=> setMenuOpen(false)}>Screen</Link>
+                      <Link href="/shows/game" className="block hover:underline" onClick={()=> setMenuOpen(false)}>Shows</Link>
+                      <Link href="/moves/game" className="block hover:underline" onClick={()=> setMenuOpen(false)}>Movies</Link>
                       {/* <Link href="/comics/game" className="block hover:underline" onClick={()=> setMenuOpen(false)}>Comics</Link> */}
                     </nav>
 
