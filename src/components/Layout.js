@@ -10,6 +10,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { useRouter } from "next/router";
 import LoadingScreen from "./LoadingScreen";
 import HowToPlay from "./HowToPlay/HowToPlay";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function Layout( {children} ) {
 
@@ -156,6 +157,8 @@ export default function Layout( {children} ) {
             {isLoading ? <LoadingScreen /> : children}
 
           </div>
+
+          <Toaster />
 
         </ThemeProvider>
       </div>

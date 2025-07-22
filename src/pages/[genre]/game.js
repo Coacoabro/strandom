@@ -366,9 +366,28 @@ export default function Game( {genre} ) {
                                 solutionWords={solutionWords}
                             />
                         </div>
-                        <div className="justify-between hidden sm:flex px-4">
+                        <div className="justify-center sm:justify-start items-center flex px-4 pb-4 space-x-4">
 
-                            <Button onClick={()=> handleHint()} className="text-xs px-2 gap-0.5">
+                            <div className="hidden sm:flex w-16">
+                                <AnimatePresence>
+                                    {goldGained !== 0 && (
+                                        <motion.div
+                                            key="gain"
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: -20 }}
+                                            exit={{ opacity: 0 }}
+                                            transition={{ duration: 0.6 }}
+                                            className="text-xl font-bold absolute"
+                                        >
+                                            {goldGained}
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+
+                                <div className="text-xl font-bold">🪙{goldAmount}</div>
+                            </div>
+
+                            <Button onClick={()=> handleHint()} className="text-xs px-2 gap-0.5 hidden sm:flex">
                                 <motion.span 
                                     style={{
                                         transformStyle: "preserve-3d",
@@ -389,37 +408,14 @@ export default function Game( {genre} ) {
                                 15 - Hint
                             </Button>
 
+                                                        
                             {gameWon && (<div className="flex justify-center">
                                 <GameComplete title={title} results={results} gameWon={gameWon} goldAmount={goldAmount} />
                             </div>)}
 
-                            <div>
-                                <AnimatePresence>
-                                    {goldGained !== 0 && (
-                                        <motion.div
-                                            key="gain"
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: -20 }}
-                                            exit={{ opacity: 0 }}
-                                            transition={{ duration: 0.6 }}
-                                            className="text-xl font-bold absolute"
-                                        >
-                                            {goldGained}
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-
-                                <div className="text-xl font-bold">🪙{goldAmount}</div>
-                            </div>
-
                         </div>
 
                     </div>
-
-                    {gameWon && (<div className="flex justify-center sm:hidden">
-                        <GameComplete title={title} results={results} gameWon={gameWon} goldAmount={goldAmount} />
-                    </div>)}
-
 
 
                     
