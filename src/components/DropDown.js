@@ -40,7 +40,8 @@ export default function DropdownMenuCheckboxes() {
                     <DropdownMenuPortal>
                         <DropdownMenuSubContent>
                             <DropdownMenuItem><Link href="/gaming/game">Gaming</Link></DropdownMenuItem>
-                            <DropdownMenuItem><Link href="/screen/game">Movies & Shows</Link></DropdownMenuItem>
+                            <DropdownMenuItem><Link href="/shows/game">Shows</Link></DropdownMenuItem>
+                            <DropdownMenuItem><Link href="/movies/game">Movies</Link></DropdownMenuItem>
                         </DropdownMenuSubContent>
                     </DropdownMenuPortal>
                 </DropdownMenuSub>

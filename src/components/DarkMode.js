@@ -1,6 +1,7 @@
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 import { Switch } from "@/components/ui/switch";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
 
 export default function DarkMode( {isAbsolute} ) {
@@ -18,12 +19,17 @@ export default function DarkMode( {isAbsolute} ) {
 
     return(
         <div className={`${isAbsolute ? "absolute" : ""} flex items-center sm:justify-start gap-3 ml-6 sm:ml-0 scale-125 sm:scale-100`}>
-            <Switch
-                checked={isDark}
-                onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
-                aria-label="Toggle theme"
-            />
-            Mode: {isDark ? "Dark" : "Light"}
+            <Tooltip>  
+                <TooltipTrigger>
+                    <Switch
+                        checked={isDark}
+                        onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
+                        aria-label="Toggle theme"
+                    />
+                    <p className="sm:hidden">Mode: {isDark ? "Dark" : "Light"}</p>
+                </TooltipTrigger>
+                <TooltipContent className="text-lg">Mode: {isDark ? "Dark" : "Light"}</TooltipContent>
+            </Tooltip>
         </div>
     )
 }

@@ -126,25 +126,30 @@ export default function Layout( {children} ) {
           {/* DESKTOP */}
           <div className="hidden sm:block">
             <div className="fixed top-0 left-0 w-full z-50">
-              <div className="flex justify-center items-end max-w-xl mx-auto h-14">
-                  <div className="w-1/4 lg:w-1/6 flex justify-center text-3xl font-bold">
-                    <DropDown />
-                  </div>
-                  <div className="w-1/2 lg:w-2/3 flex justify-center text-3xl font-bold">
-                    <Link className="hover:scale-110 transition-all duration-400" href="/"> 
-                      Strandom
-                    </Link>
-                  </div>
-                  <div className="w-1/4 lg:w-1/6 flex justify-center text-3xl font-bold hover:scale-110 transition-all duration-400">
-                    <Tooltip>
-                      
-                      <TooltipTrigger>
-                        <HowToPlay />
-                      </TooltipTrigger>
-
-                      <TooltipContent className="text-lg">How to Play</TooltipContent>
-                    </Tooltip>
-                  </div>
+              <div className="flex justify-center p-2">
+                <div className="flex justify-end px-8 text-3xl font-bold w-1/4">
+                  <Tooltip>  
+                    <TooltipTrigger>
+                      <HowToPlay />
+                    </TooltipTrigger>
+                    <TooltipContent className="text-lg">How to Play</TooltipContent>
+                  </Tooltip>
+                </div>
+                <Link className="hover:scale-110 transition-all duration-400 text-3xl font-bold flex justify-center" href="/"> 
+                  Strandom
+                </Link>
+                <div className="flex justify-start px-8 w-1/4">
+                  {/* <DropDown /> */}
+                  <DarkMode />
+                </div>
+              </div>
+                
+              <div className="flex justify-center items-end max-w-xl mx-auto gap-4 text-lg">
+                  
+                <Link href="/gaming/game" className="hover:underline">Gaming</Link>
+                <Link href="/shows/game" className="hover:underline">Shows</Link>
+                <Link href="/movies/game" className="hover:underline">Movies</Link>
+                  
               </div>
             </div>
 

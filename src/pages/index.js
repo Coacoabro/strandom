@@ -26,14 +26,14 @@ export default function Home() {
                     <Link href="/gaming/game">Gaming</Link>
                 </Button>
               </div>
-              {/* <div className="py-2 flex justify-evenly items-center">
-                <Button asChild className="px-4 py-2 rounded-xl hover:scale-105">
-                    <Link href="/anime/game">Anime</Link>
-                </Button>
-              </div> */}
               <div className="py-2 flex justify-evenly items-center">
                 <Button asChild className="px-4 py-2 rounded-xl hover:scale-105">
-                    <Link href="/screen/game">Movies & Shows</Link>
+                    <Link href="/shows/game">Shows</Link>
+                </Button>
+              </div>
+              <div className="py-2 flex justify-evenly items-center">
+                <Button asChild className="px-4 py-2 rounded-xl hover:scale-105">
+                    <Link href="/movies/game">Movies</Link>
                 </Button>
               </div>
               {/* <div className="py-2 flex justify-evenly items-center">

@@ -30,28 +30,28 @@ export default function Game( {genre} ) {
     const [selected, setSelected] = useState([]);
     const [foundWords, setFoundWords] = useState(() => {
         if (typeof window !== "undefined") {
-            const saved = localStorage.getItem("foundWords");
+            const saved = localStorage.getItem(`${genre}_foundWords`);
             return saved ? JSON.parse(saved) : [];
         }
         return [];
     });
     const [hintedWords, setHintedWords] = useState(() => {
         if (typeof window !== "undefined") {
-            const saved = localStorage.getItem("hintedWords");
+            const saved = localStorage.getItem(`${genre}_hintedWords`);
             return saved ? saved.split(",") : [];
         }
         return [];
     })
     const [results, setResults] = useState(() => {
         if (typeof window !== "undefined") {
-            const saved = localStorage.getItem("results");
+            const saved = localStorage.getItem(`${genre}_results`);
             return saved ? saved.split(",") : [];
         }
         return [];
     });
     const [goldAmount, setGoldAmount] = useState(() => {
         if (typeof window !== "undefined") {
-            const saved = localStorage.getItem("gold");
+            const saved = localStorage.getItem(`${genre}_gold`);
             return saved ? Number(saved) : 0
         }
         return 0;
@@ -117,13 +117,13 @@ export default function Game( {genre} ) {
     // SAVE PROGRESS
     useEffect(() => {
         if(gameWon) {
-            localStorage.setItem("gameWon", true)
+            localStorage.setItem(`${genre}_gameWon`, true)
         } 
 
-        localStorage.setItem("foundWords", JSON.stringify(foundWords))
-        localStorage.setItem("results", results.join(","))
-        localStorage.setItem("hintedWords", hintedWords.join(","))
-        localStorage.setItem("gold", goldAmount)
+        localStorage.setItem(`${genre}_foundWords`, JSON.stringify(foundWords))
+        localStorage.setItem(`${genre}_results`, results.join(","))
+        localStorage.setItem(`${genre}_hintedWords`, hintedWords.join(","))
+        localStorage.setItem(`${genre}_gold`, goldAmount)
 
     }, [foundWords, gameWon, results, goldAmount, hintedWords])
 
@@ -426,9 +426,10 @@ export default function Game( {genre} ) {
 
                     {/* <Button
                         onClick={() => {
-                            localStorage.removeItem("foundWords")
-                            localStorage.removeItem("results")
-                            localStorage.removeItem("resultsDrawerShown")
+                            localStorage.removeItem(`${genre}_foundWords`)
+                            localStorage.removeItem(`${genre}_results`)
+                            localStorage.removeItem(`${genre}_hintedWords`)
+                            localStorage.removeItem(`${genre}_gameWon`)
                             setFoundWords([])
                             setGuessedWords([])
                             setHintedWords([])

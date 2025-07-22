@@ -22,21 +22,19 @@ export default function LetterTile( { letter, row, col, onClick, isSelected, isF
         <div className="relative text-center w-full h-full transition-all transition-colors duration-200">
             <motion.button
                 whileTap={{ scale: 0.95 }}
-                animate={{
-                    backgroundColor: isSelected ? "#60A5FA"  // blue-400
-                    : isFound ? "#86EFAC"  // green-300
-                    : "rgba(0,0,0,0)",
-                    scale: isSelected ? 1.05 : 1,
-                }}
+                animate={{ scale: isSelected ? 1.05 : 1 }}
                 transition={sharedSpring}
                 data-row={row}
                 data-col={col}
                 variant="ghost"
-                className={`relative z-30 pb-0.5 rounded-full leading-none select-none w-12 h-12 text-3xl font-bold 
-                    ${isSelected ? "text-black hover:text-black font-bold" 
-                        : isFound ? "text-black hover:text-black font-bold" 
-                        : isHinted ? "text-blue-400 dark:text-blue-500" 
-                        : ""} `}
+                className={`
+                    relative z-30 pb-0.5 rounded-full leading-none select-none 
+                    w-12 h-12 text-3xl font-bold
+                    ${isSelected ? "bg-blue-400 text-black font-bold"
+                        : isFound ? "bg-green-300 text-black font-bold"
+                        : isHinted ? "text-blue-400 dark:text-blue-500"
+                        : ""}
+                `}
                 onClick={!isDragging ? onClick : undefined}
                 onPointerDown={onPointerDown}
                 onPointerEnter={onPointerEnter}
@@ -47,19 +45,11 @@ export default function LetterTile( { letter, row, col, onClick, isSelected, isF
 
             
             {foundConnectTo && (
-                <motion.div
-                    className={cn(connectorClass(foundConnectTo, isFound, true))}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={connectorSpring}
-                />
+                <div className={cn(connectorClass(foundConnectTo, isFound, true))} />
             )}
 
             {connectTo && (
-                <motion.div
-                    className={cn(connectorClass(connectTo, false, false))}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={connectorSpring}
-                />
+                <div className={cn(connectorClass(connectTo, false, false))} />
             )}
 
 
@@ -70,13 +60,13 @@ export default function LetterTile( { letter, row, col, onClick, isSelected, isF
 
 function connectorClass(dir, isFound, above) {
     const base = above ? "absolute z-0" : "absolute z-10"
-    let color = isFound ? "bg-green-300" : "bg-[#60A5FA]"
+    let color = isFound ? "bg-green-300" : "bg-blue-400"
     
     switch (dir) {
         case "right":
-            return `${base} ${color} top-[65%] w-7 h-4 left-1/6 -translate-x-full -translate-y-full`;
+            return `${base} ${color} top-[65%] w-6 h-4 left-1/6 -translate-x-full -translate-y-full`;
         case "left":
-            return `${base} ${color} top-[65%] w-7 h-4 left-[74%] -translate-y-full`;
+            return `${base} ${color} top-[65%] w-6 h-4 left-[80%] -translate-y-full`;
         case "down":
             return `${base} ${color} w-4 h-6 right-[37%] -top-[40%]`;
         case "up":

@@ -12,9 +12,7 @@ export default function HowToPlay(){
     return(
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="ghost">
-                    <img src="/questionmark.svg" className="w-7 dark:invert"/>
-                </Button>
+                <img src="/questionmark.svg" className="w-7 dark:invert hover:scale-110 transition-all duration-300"/>
             </DialogTrigger>
             <DialogContent className="max-w-lg">
                 <DialogHeader className="text-2xl font-bold">
