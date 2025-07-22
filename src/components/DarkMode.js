@@ -21,12 +21,14 @@ export default function DarkMode( {isAbsolute} ) {
         <div className={`${isAbsolute ? "absolute" : ""} flex items-center sm:justify-start gap-3 ml-6 sm:ml-0 scale-125 sm:scale-100`}>
             <Tooltip>  
                 <TooltipTrigger>
-                    <Switch
-                        checked={isDark}
-                        onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
-                        aria-label="Toggle theme"
-                    />
-                    <p className="sm:hidden">Mode: {isDark ? "Dark" : "Light"}</p>
+                    <div className="flex gap-2 items-center">
+                        <Switch
+                            checked={isDark}
+                            onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
+                            aria-label="Toggle theme"
+                        />
+                        <p className="sm:hidden">Mode: {isDark ? "Dark" : "Light"}</p>
+                    </div>
                 </TooltipTrigger>
                 <TooltipContent className="text-lg">Mode: {isDark ? "Dark" : "Light"}</TooltipContent>
             </Tooltip>
