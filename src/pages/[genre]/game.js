@@ -308,7 +308,7 @@ export default function Game( {genre} ) {
                         <div className="text-xl font-bold">🪙{goldAmount}</div>
                     </div>
                     <div className="flex items-center justify-center">
-                        <div className="text-center sm:h-24 py-2 px-4 text-2xl font-bold">
+                        <div className="text-center sm:h-12 py-2 px-4 text-2xl font-bold">
                             <span>"{title}"</span>
                             <div className="font-medium opacity-50 text-xl">{genre.charAt(0).toUpperCase() + genre.slice(1)} #1</div>
                             <div className="absolute top-28 right-2 sm:hidden">

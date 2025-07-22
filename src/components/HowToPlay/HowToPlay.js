@@ -2,6 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Link from "next/link"
 import { useState } from "react"
+import { Button } from "../ui/button"
 
 export default function HowToPlay(){
 
@@ -11,9 +12,9 @@ export default function HowToPlay(){
     return(
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <button>
+                <Button variant="ghost">
                     <img src="/questionmark.svg" className="w-7 dark:invert"/>
-                </button>
+                </Button>
             </DialogTrigger>
             <DialogContent className="max-w-lg">
                 <DialogHeader className="text-2xl font-bold">
