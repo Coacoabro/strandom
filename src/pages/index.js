@@ -20,7 +20,7 @@ export default function Home() {
             <p className="mb-6 text-gray-600">
                 The fandom-themed word puzzle! Current games come from either the gaming genre or movies/shows. More genres coming soon so stay tuned and have fun!
             </p>
-            <div className="grid grid-cols-2">
+            <div className="grid grid-cols-3">
               <div className="py-2 flex justify-evenly items-center">
                 <Button asChild className="px-4 py-2 rounded-xl hover:scale-105">
                     <Link href="/gaming/game">Gaming</Link>
