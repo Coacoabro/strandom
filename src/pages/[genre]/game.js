@@ -289,7 +289,7 @@ export default function Game( {genre} ) {
             <main className="flex min-h-screen flex-col items-center justify-center py-2 sm:p-6">
                 <div className="max-w-7xl mx-auto">
 
-                    <div className="absolute top-28 flex text-xl font-bold sm:hidden">
+                    <div className="absolute top-20 flex text-xl font-bold sm:hidden">
                         <AnimatePresence>
                             {goldGained !== 0 && (
                                 <motion.div
@@ -311,7 +311,7 @@ export default function Game( {genre} ) {
                         <div className="text-center sm:h-12 py-2 px-4 text-2xl font-bold">
                             <span>"{title}"</span>
                             <div className="font-medium opacity-50 text-xl">{genre.charAt(0).toUpperCase() + genre.slice(1)} #1</div>
-                            <div className="absolute top-28 right-2 sm:hidden">
+                            <div className="absolute top-20 right-2 sm:hidden">
                                 <Button onClick={()=> handleHint()} className={`text-xs px-2 gap-0.5 ${goldAmount >= 15 ? "" : ""}`}>
                                     <motion.span 
                                         style={{
@@ -335,7 +335,7 @@ export default function Game( {genre} ) {
                             </div>
                         </div>
                     </div>
-                    <div className="text-center px-2 py-2 text-xl font-bold flex justify-between items-end">
+                    <div className="text-center p-2 text-xl font-bold flex justify-between items-end">
                         <div className={`${foundWords.length == solutionWords.length ? "text-green-400" : ""} w-1/4 text-lg hidden sm:block`}>
                             <p>Words</p>
                             <p>{foundWords.length}/{solutionWords.length}</p>
