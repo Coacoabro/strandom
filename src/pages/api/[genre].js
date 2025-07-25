@@ -1,4 +1,5 @@
-
+import { promises as fs } from "fs";
+import path from "path";
 
 export default async function handler(req, res) {
 
@@ -14,7 +15,16 @@ export default async function handler(req, res) {
     const url = `https://d35lwzawlg3izy.cloudfront.net/data/${genre}/${date}.json`;
 
     if (genre == "test") {
-        const response = await fetch(`https://d35lwzawlg3izy.cloudfront.net/data/test/gay.json`)
+        const filePath = path.join(process.cwd(), "public", "boards", "killers.json");
+        const fileContents = await fs.readFile(filePath, "utf8");
+        const data = JSON.parse(fileContents);
+
+        res.status(200).json(data);
+            
+    }
+
+    else if (genre == "jake") {
+        const response = await fetch(`https://d35lwzawlg3izy.cloudfront.net/data/jake/gay.json`)
         const data = await response.json();
         res.status(200).json(data);
     }
