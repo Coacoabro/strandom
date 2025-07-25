@@ -13,11 +13,21 @@ export default async function handler(req, res) {
 
     const url = `https://d35lwzawlg3izy.cloudfront.net/data/${genre}/${date}.json`;
 
-    try {
-        const response = await fetch(url);
+    if (genre == "test") {
+        const response = await fetch(`https://d35lwzawlg3izy.cloudfront.net/data/test/gay.json`)
         const data = await response.json();
         res.status(200).json(data);
-    } catch (err) {
-        res.status(404).json({ error: "Puzzle not found." });
     }
+
+    else{
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            res.status(200).json(data);
+        } catch (err) {
+            res.status(404).json({ error: "Puzzle not found." });
+        }
+    }
+
+
 }
