@@ -20,6 +20,13 @@ export default function Layout( {children} ) {
 
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false)
+
+  const currentYear = new Date().getFullYear();
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText("admin@strandom.app");
+    alert("Email copied to clipboard!");
+  };
   
 
   useEffect(() => {
@@ -157,7 +164,20 @@ export default function Layout( {children} ) {
             {isLoading ? <LoadingScreen /> : children}
 
           </div>
+              
+          <div className="fixed bottom-0 w-full flex flex-col items-center justify-center text-center bg-background py-4">
 
+            <div>
+              <p>Contact us for suggestions, bug reports, or board ideas!</p>
+              <button className="hover:underline text-blue-500 dark:text-cyan-300 cursor-pointer" onClick={handleCopy}>admin@strandom.app</button>
+            </div>
+
+
+            <div id="copyright" className="text-center text-sm text-muted-foreground">
+              &copy; 2025 - {currentYear} www.strandom.app - All Rights Reserved.
+            </div>
+
+          </div>
           <Toaster />
 
         </ThemeProvider>
