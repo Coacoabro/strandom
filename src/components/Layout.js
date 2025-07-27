@@ -90,27 +90,42 @@ export default function Layout( {children} ) {
               <AnimatePresence>
                 {menuOpen && (
                   <motion.div 
-                    className="h-screen shadow-lg overflow-hidden bg-white dark:bg-slate-900 rounded-lg"
+                    className="h-screen shadow-lg overflow-hidden bg-white dark:bg-slate-900 rounded-lg flex flex-col justify-between"
                     initial={{ width: 0 }}
                     animate={{ width: 240 }}
                     exit={{ width: 0 }}
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   >
-                    <div className="p-4 border-b border-gray-200 dark:border-gray-800">
-                      <Link href="/" className="text-2xl font-bold text-black dark:text-white" onClick={()=> setMenuOpen(false)}>
-                        Strandom
-                      </Link>
+                    <div>
+                      <div className="p-4 border-b border-gray-200 dark:border-gray-800">
+                        <Link href="/" className="text-2xl font-bold text-black dark:text-white" onClick={()=> setMenuOpen(false)}>
+                          Strandom
+                        </Link>
+                      </div>
+
+                      <nav className="flex-1 p-4 space-y-8 text-xl text-black dark:text-white">
+                        <Link href="/gaming/game" className="block hover:underline" onClick={()=> setMenuOpen(false)}>Gaming</Link>
+                        <Link href="/shows/game" className="block hover:underline" onClick={()=> setMenuOpen(false)}>Shows</Link>
+                        <Link href="/moves/game" className="block hover:underline" onClick={()=> setMenuOpen(false)}>Movies</Link>
+                        {/* <Link href="/comics/game" className="block hover:underline" onClick={()=> setMenuOpen(false)}>Comics</Link> */}
+                      </nav>
+
+                      <div className="p-4 border-t border-gray-200 dark:border-gray-800 space-y-6 whitespace-nowrap">
+                        <DarkMode />
+                      </div>
                     </div>
 
-                    <nav className="flex-1 p-4 space-y-8 text-xl text-black dark:text-white">
-                      <Link href="/gaming/game" className="block hover:underline" onClick={()=> setMenuOpen(false)}>Gaming</Link>
-                      <Link href="/shows/game" className="block hover:underline" onClick={()=> setMenuOpen(false)}>Shows</Link>
-                      <Link href="/moves/game" className="block hover:underline" onClick={()=> setMenuOpen(false)}>Movies</Link>
-                      {/* <Link href="/comics/game" className="block hover:underline" onClick={()=> setMenuOpen(false)}>Comics</Link> */}
-                    </nav>
-
-                    <div className="p-4 border-t border-gray-200 dark:border-gray-800 space-y-6 whitespace-nowrap">
-                      <DarkMode />
+                    <div className="p-4 text-sm text-black dark:text-white border-t border-gray-200 dark:border-gray-800 space-y-2">
+                      <p>Contact us for suggestions, bug reports, or board ideas!</p>
+                      <button 
+                        className="hover:underline text-blue-500 dark:text-cyan-300 cursor-pointer"
+                        onClick={handleCopy}
+                      >
+                        admin@strandom.app
+                      </button>
+                      <div className="text-muted-foreground text-xs">
+                        &copy; 2025 - {currentYear} www.strandom.app - All Rights Reserved.
+                      </div>
                     </div>
 
                   </motion.div>
@@ -165,7 +180,7 @@ export default function Layout( {children} ) {
 
           </div>
               
-          <div className="fixed bottom-0 w-full flex flex-col items-center justify-center text-center bg-background py-4">
+          <div className="hidden fixed bottom-0 w-full sm:flex flex-col items-center justify-center text-center bg-background py-4">
 
             <div>
               <p>Contact us for suggestions, bug reports, or board ideas!</p>
