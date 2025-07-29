@@ -18,7 +18,7 @@ export default function HowToPlay(){
                 <DialogHeader className="text-2xl font-bold">
                     <DialogTitle>How to Play</DialogTitle>
                 </DialogHeader>
-                <Tabs defaultValue="gameplay" className="w-full h-40">
+                <Tabs defaultValue="gameplay" className="w-full h-60 sm:h-40">
                     <TabsContent value="gameplay">
                         <p className="opacity-80">
                             <h1>Drag across or taps letters in a row to form words. You're allowed to go diagonal as well as cross over letters to form a word.</h1>
@@ -33,8 +33,8 @@ export default function HowToPlay(){
                     <TabsContent value="hints">
                         <p className="opacity-80">
                             There are two types of hints you can spend your gold on:
-                            <h1 className="text-sm"><span className="font-bold">Source Hints</span> reveal clues about the puzzle’s origin (the game, movie, or show it’s based on). Each hint costs 🪙10, then 🪙20, and 🪙30, gradually becoming more and more obvious.</h1>
-                            <h2 className="text-sm"><span className="font-bold">Word Hints</span> reveal words from easiest to hardest. Each one costing 🪙15</h2>
+                            <h1 className="text-sm"><span className="font-bold">Word Hints</span> reveal words from easiest to hardest. Each one costing 🪙15</h1>
+                            <h2 className="text-sm"><span className="font-bold">Source Hints</span> reveal clues about the puzzle’s origin (the game, movie, or show it’s based on). Each hint costs 🪙10, then 🪙20, and 🪙30, gradually becoming more and more obvious.</h2>
                         </p>
                     </TabsContent>
                     <TabsContent value="themes">

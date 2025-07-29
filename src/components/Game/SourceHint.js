@@ -19,7 +19,7 @@ export default function SourceHint( { sourceAmount, handleSourceHint, goldAmount
     return(
             <AlertDialog>
                 <AlertDialogTrigger>
-                    <Button onClick={()=> handleSourceHint()} className="text-xs px-2 gap-0.5 hidden sm:flex cursor-pointer">
+                    <Button onClick={()=> handleSourceHint()} className="text-xs px-2 gap-0.5 flex cursor-pointer">
                         {!gameWon ? (
                             <>
                                 <motion.span 
