@@ -26,7 +26,16 @@ export default function HowToPlay(){
                         </p>
                     </TabsContent>
                     <TabsContent value="gold">
-                        <p className="opacity-80">You earn gold 🪙 by solving words even if they aren't one of the solution words. Use it to buy hints or brag to your friends to show how many words you found!</p>
+                        <p className="opacity-80">
+                            You earn gold 🪙 by solving words even if they aren't one of the solution words. Use it to buy hints or brag to your friends to show how many words you found!
+                        </p>
+                    </TabsContent>
+                    <TabsContent value="hints">
+                        <p className="opacity-80">
+                            There are two types of hints you can spend your gold on:
+                            <h1 className="text-sm"><span className="font-bold">Source Hints</span> reveal clues about the puzzle’s origin (the game, movie, or show it’s based on). Each hint costs 🪙10, then 🪙20, and 🪙30, gradually becoming more and more obvious.</h1>
+                            <h2 className="text-sm"><span className="font-bold">Word Hints</span> reveal words from easiest to hardest. Each one costing 🪙15</h2>
+                        </p>
                     </TabsContent>
                     <TabsContent value="themes">
                         <p className="opacity-80">
@@ -35,9 +44,10 @@ export default function HowToPlay(){
                         </p>
                     </TabsContent>
                     <TabsList>
-                        <TabsTrigger value="gameplay">Gameplay</TabsTrigger>
-                        <TabsTrigger value="gold">Gold</TabsTrigger>
-                        <TabsTrigger value="themes">Themes</TabsTrigger>
+                        <TabsTrigger value="gameplay" className="cursor-pointer">Gameplay</TabsTrigger>
+                        <TabsTrigger value="gold" className="cursor-pointer">Gold</TabsTrigger>
+                        <TabsTrigger value="hints" className="cursor-pointer">Hints</TabsTrigger>
+                        <TabsTrigger value="themes" className="cursor-pointer">Themes</TabsTrigger>
                     </TabsList>
                 </Tabs>
             </DialogContent>

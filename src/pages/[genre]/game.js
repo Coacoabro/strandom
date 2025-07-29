@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import DarkMode from "@/components/DarkMode";
 import LoadingGameBoard from "@/components/Game/LoadingGameBoard";
 import GameComplete from "@/components/Game/GameComplete";
+import SourceHint from "@/components/Game/SourceHint";
 
 export async function getServerSideProps(context) {
     const { genre } = context.params
@@ -56,6 +57,14 @@ export default function Game( {genre} ) {
         }
         return 0;
     });
+    const [sourceAmount, setSourceAmount] = useState(() => {
+        if (typeof window !== "undefined") {
+            const saved = localStorage.getItem(`${genre}_source`);
+            return saved ? Number(saved) : 10
+        }
+        return 10;
+    })
+
     const [goldGained, setGoldGained] = useState(0)
 
     const [title, setTitle] = useState(null)
@@ -124,6 +133,7 @@ export default function Game( {genre} ) {
         localStorage.setItem(`${genre}_results`, results.join(","))
         localStorage.setItem(`${genre}_hintedWords`, hintedWords.join(","))
         localStorage.setItem(`${genre}_gold`, goldAmount)
+        localStorage.setItem(`${genre}_source`, sourceAmount)
 
     }, [foundWords, gameWon, results, goldAmount, hintedWords])
 
@@ -136,13 +146,13 @@ export default function Game( {genre} ) {
         }
         fetchDictionary()
     }, [])
-    const handleHint = () => {
+    const handleWordHint = () => {
         if(goldAmount > 15 && !gameWon){
             const nextHint = solutionWords.find(sol =>
                 !foundWords.some(f => f.word == sol.word)
             )
             if (!nextHint) {
-                setAlert("No more hints available!")
+                setAlert("Dude what more do you need??")
                 return
             }
             setHintedWords([...hintedWords, nextHint.word])
@@ -150,6 +160,15 @@ export default function Game( {genre} ) {
             setResults([...results, "❓"])
             setGoldGained("-15")
             setTimeout(() => setGoldGained(0), 400)
+        }
+    }
+
+    const handleSourceHint = () => {
+        if(goldAmount > sourceAmount && !gameWon && sourceAmount !== 40){
+            setGoldAmount(goldAmount - sourceAmount)
+            setGoldGained(`${sourceAmount}`)
+            setTimeout(() => setGoldGained(0), 400)
+            setSourceAmount(sourceAmount + 10)
         }
     }
 
@@ -285,6 +304,8 @@ export default function Game( {genre} ) {
 
     if (gameInfo){
 
+        const sourceHints = gameInfo.sourceHints
+
         return (
             <main className="flex min-h-screen flex-col items-center justify-center py-2 sm:p-6">
                 <div className="max-w-7xl mx-auto">
@@ -366,7 +387,7 @@ export default function Game( {genre} ) {
                                 solutionWords={solutionWords}
                             />
                         </div>
-                        <div className="justify-center sm:justify-start items-center flex px-4 pb-4 space-x-4">
+                        <div className="justify-center sm:justify-between items-center flex px-4 pb-4 space-x-4 ">
 
                             <div className="hidden sm:flex w-16">
                                 <AnimatePresence>
@@ -387,33 +408,40 @@ export default function Game( {genre} ) {
                                 <div className="text-xl font-bold">🪙{goldAmount}</div>
                             </div>
 
-                            <Button onClick={()=> handleHint()} className="text-xs px-2 gap-0.5 hidden sm:flex">
-                                <motion.span 
-                                    style={{
-                                        transformStyle: "preserve-3d",
-                                        perspective: 1000
-                                    }}
-                                    animate={ goldAmount >= 15 ? 
-                                        { rotateY: [0, 360] }
-                                        : { rotateY: 0 }
-                                    }
-                                    transition={{
-                                        repeat: Infinity,
-                                        duration: 3,
-                                        ease: "linear"
-                                    }}
-                                >
-                                    🪙
-                                </motion.span>                                 
-                                15 - Hint
-                            </Button>
+                            <div className="flex space-x-2">
+                                <Button onClick={()=> handleWordHint()} className="text-xs px-2 gap-0.5 hidden sm:flex cursor-pointer">
+                                    <motion.span 
+                                        style={{
+                                            transformStyle: "preserve-3d",
+                                            perspective: 1000
+                                        }}
+                                        animate={ goldAmount >= 15 ? 
+                                            { rotateY: [0, 360] }
+                                            : { rotateY: 0 }
+                                        }
+                                        transition={{
+                                            repeat: Infinity,
+                                            duration: 3,
+                                            ease: "linear"
+                                        }}
+                                    >
+                                        🪙
+                                    </motion.span>                                 
+                                    15 - Word Hint
+                                </Button>
+
+                                <SourceHint sourceAmount={sourceAmount} goldAmount={goldAmount} handleSourceHint={handleSourceHint} sourceHints={sourceHints} />
+
+                            </div>
 
                                                         
-                            {gameWon && (<div className="flex justify-center">
-                                <GameComplete title={title} results={results} gameWon={gameWon} goldAmount={goldAmount} />
-                            </div>)}
+
 
                         </div>
+
+                        {gameWon && (<div className="flex justify-center">
+                            <GameComplete title={title} results={results} gameWon={gameWon} goldAmount={goldAmount} />
+                        </div>)}
 
                     </div>
 

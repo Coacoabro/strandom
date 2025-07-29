@@ -37,7 +37,7 @@ export default function GameComplete( {title, results, gameWon, goldAmount} ) {
     return(
         <Drawer open={showDrawer} onOpenChange={setShowDrawer}>
             <DrawerTrigger asChild>
-                <Button className="text-lg">Show Results</Button>
+                <Button className="text-lg cursor-pointer">Show Results</Button>
             </DrawerTrigger>
             <DrawerContent>
                 <div className="mx-auto w-full max-w-sm">
@@ -60,7 +60,7 @@ export default function GameComplete( {title, results, gameWon, goldAmount} ) {
                             <DrawerFooter>
                                 <DrawerClose>
                                     <Button 
-                                        className="w-36"
+                                        className="w-36 cursor-pointer"
                                         onClick={() => handleCopy()}
                                     >
                                         Copy and Share!
@@ -70,7 +70,7 @@ export default function GameComplete( {title, results, gameWon, goldAmount} ) {
                         </div>
                     </div>
                     <div className="flex justify-center pb-4">
-                        <Button onClick={()=>setShowDrawer(false)}>
+                        <Button onClick={()=>setShowDrawer(false)} className="cursor-pointer">
                             Close
                         </Button>
                     </div>
