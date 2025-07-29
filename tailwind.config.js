@@ -1,4 +1,5 @@
 // tailwind.config.js
+const { px } = require('framer-motion')
 const { fontFamily } = require('tailwindcss/defaultTheme')
 
 module.exports = {
@@ -32,6 +33,9 @@ module.exports = {
         'sidebar': 'var(--sidebar)',
         'sidebar-foreground': 'var(--sidebar-foreground)',
       },
+      screens: {
+        'xs': '390px',
+      }
     },
   },
   plugins: [],

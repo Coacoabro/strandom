@@ -115,8 +115,11 @@ export default function Layout( {children} ) {
                       </div>
                     </div>
 
-                    <div className="p-4 text-sm text-black dark:text-white border-t border-gray-200 dark:border-gray-800 space-y-2">
-                      <p>Contact us for suggestions, bug reports, or board ideas!</p>
+                    <div className={`p-4 h-40 sm:h-full text-sm text-black dark:text-white border-t border-gray-200 dark:border-gray-800 space-y-2 whitespace-nowrap`}>
+                      <p className="block sm:flex">
+                        <h1>Contact us for suggestions,</h1>
+                        <h2> bug reports, or board ideas!</h2>
+                      </p>
                       <button 
                         className="hover:underline text-blue-500 dark:text-cyan-300 cursor-pointer"
                         onClick={handleCopy}
@@ -124,7 +127,8 @@ export default function Layout( {children} ) {
                         admin@strandom.app
                       </button>
                       <div className="text-muted-foreground text-xs">
-                        &copy; 2025 - {currentYear} www.strandom.app - All Rights Reserved.
+                        <h1>&copy; 2025 - {currentYear} www.strandom.app <span className="hidden sm:block">-</span></h1>
+                        <h2>All Rights Reserved.</h2>
                       </div>
                     </div>
 
@@ -138,7 +142,7 @@ export default function Layout( {children} ) {
 
             </div>
 
-            <div className={`absolute right-4 top-4 ${menuOpen ? "blur-xs" : ""}`}>
+            <div className={`absolute right-4 xs:right-0 top-4 ${menuOpen ? "blur-xs" : ""}`}>
               <HowToPlay />
             </div>
             

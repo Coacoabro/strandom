@@ -10,6 +10,7 @@ import DarkMode from "@/components/DarkMode";
 import LoadingGameBoard from "@/components/Game/LoadingGameBoard";
 import GameComplete from "@/components/Game/GameComplete";
 import SourceHint from "@/components/Game/SourceHint";
+import WordHints from "@/components/Game/WordHints";
 
 export async function getServerSideProps(context) {
     const { genre } = context.params
@@ -306,9 +307,11 @@ export default function Game( {genre} ) {
 
         const sourceHints = gameInfo.sourceHints
 
+        console.log(sourceAmount)
+
         return (
             <main className="flex min-h-screen flex-col items-center justify-center py-2 sm:p-6">
-                <div className="max-w-7xl mx-auto">
+                <div className="max-w-7xl mx-auto sm:space-y-4">
                     <div className="flex items-center justify-center">
                         <div className="text-center sm:h-12 py-1 px-4 text-xl sm:text-2xl font-bold space-y-1">
                             <div className="font-medium opacity-50 text-lg sm:hidden">Strandom {genre.charAt(0).toUpperCase() + genre.slice(1)} #1</div>
@@ -316,93 +319,77 @@ export default function Game( {genre} ) {
                             <div className="font-medium opacity-50 hidden sm:block text-xl">Strandom {genre.charAt(0).toUpperCase() + genre.slice(1)} #1</div>
                         </div>
                     </div>
-                    <div className="text-center pb-2 px-2 text-xl font-bold flex justify-between items-end">
-                        <div className={`${foundWords.length == solutionWords.length ? "text-green-400" : ""} w-1/4 text-lg hidden sm:block`}>
-                            <p>Words</p>
-                            <p>{foundWords.length}/{solutionWords.length}</p>
-                        </div>
-
-                        <div className={`${foundWords.length == solutionWords.length ? "text-green-400" : ""} w-1/4 text-sm sm:hidden`}>
-                            Words - {foundWords.length}/{solutionWords.length}
-                        </div>
-                        
-                        <div className={`font-bold ${wordFound ? "text-green-400" : ""} w-3/4 text-center h-6`}>
-                            <WordInput letters={selected.map(([r, c]) => boardData[r][c])} />
-                            {alert}
-                        </div>
-                    </div>
-                    <div className={`space-y-4 transition-all duration-300`}>
-                        <div className="flex justify-center">
-                            <GameBoard 
-                                board={boardData} 
-                                onSelect={handleSelect} 
-                                selected={selected} 
-                                foundWords={foundWords} 
-                                onPointerDown={handleStartDrag}
-                                onPointerEnter={handleDragOver}
-                                onTouchMove={handleDragOver}
-                                onPointerUp={handleEndDrag}
-                                isDragging={isDragging}
-                                hintedWords={hintedWords}
-                                solutionWords={solutionWords}
-                            />
-                        </div>
-                        <div className="justify-center sm:justify-between items-center flex px-4 pb-4 space-x-4 ">
-
-                            <div className="flex w-16">
-                                <AnimatePresence>
-                                    {goldGained !== 0 && (
-                                        <motion.div
-                                            key="gain"
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: -20 }}
-                                            exit={{ opacity: 0 }}
-                                            transition={{ duration: 0.6 }}
-                                            className="text-xl font-bold absolute"
-                                        >
-                                            {goldGained}
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-
-                                <div className="text-xl font-bold">🪙{goldAmount}</div>
+                    <div>
+                        <div className="text-center pb-2 px-2 text-xl font-bold flex justify-between items-end">
+                            <div className={`${foundWords.length == solutionWords.length ? "text-green-400" : ""} w-1/4 text-lg hidden sm:block`}>
+                                <p>Words</p>
+                                <p>{foundWords.length}/{solutionWords.length}</p>
                             </div>
 
-                            <div className="flex space-x-2">
-                                <Button onClick={()=> handleWordHint()} className="text-xs px-2 gap-0.5 flex cursor-pointer">
-                                    <motion.span 
-                                        style={{
-                                            transformStyle: "preserve-3d",
-                                            perspective: 1000
-                                        }}
-                                        animate={ goldAmount >= 15 ? 
-                                            { rotateY: [0, 360] }
-                                            : { rotateY: 0 }
-                                        }
-                                        transition={{
-                                            repeat: Infinity,
-                                            duration: 3,
-                                            ease: "linear"
-                                        }}
-                                    >
-                                        🪙
-                                    </motion.span>                                 
-                                    15 - Word Hint
-                                </Button>
+                            <div className={`${foundWords.length == solutionWords.length ? "text-green-400" : ""} w-1/4 text-sm sm:hidden`}>
+                                Words - {foundWords.length}/{solutionWords.length}
+                            </div>
+                            
+                            <div className={`font-bold ${wordFound ? "text-green-400" : ""} w-3/4 text-center h-6`}>
+                                <WordInput letters={selected.map(([r, c]) => boardData[r][c])} />
+                                {alert}
+                            </div>
+                        </div>
+                        <div className={`space-y-4 transition-all duration-300`}>
+                            <div className="flex justify-center">
+                                <GameBoard 
+                                    board={boardData} 
+                                    onSelect={handleSelect} 
+                                    selected={selected} 
+                                    foundWords={foundWords} 
+                                    onPointerDown={handleStartDrag}
+                                    onPointerEnter={handleDragOver}
+                                    onTouchMove={handleDragOver}
+                                    onPointerUp={handleEndDrag}
+                                    isDragging={isDragging}
+                                    hintedWords={hintedWords}
+                                    solutionWords={solutionWords}
+                                />
+                            </div>
+                            <div className="justify-center sm:justify-between items-center flex px-4 sm:pb-4 space-x-4 ">
 
-                                <SourceHint sourceAmount={sourceAmount} goldAmount={goldAmount} handleSourceHint={handleSourceHint} sourceHints={sourceHints} gameWon={gameWon} />
+                                <div className="flex w-16">
+                                    <AnimatePresence>
+                                        {goldGained !== 0 && (
+                                            <motion.div
+                                                key="gain"
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: -20 }}
+                                                exit={{ opacity: 0 }}
+                                                transition={{ duration: 0.6 }}
+                                                className="text-xl font-bold absolute"
+                                            >
+                                                {goldGained}
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+
+                                    <div className="text-xl font-bold">🪙{goldAmount}</div>
+                                </div>
+
+                                <div className="flex space-x-2">
+
+                                    <WordHints handleWordHint={handleWordHint} title={title} results={results} gameWon={gameWon} goldAmount={goldAmount} />
+
+                                    <SourceHint sourceAmount={sourceAmount} goldAmount={goldAmount} handleSourceHint={handleSourceHint} sourceHints={sourceHints} gameWon={gameWon} />
+
+                                </div>
+
+                                                            
+
 
                             </div>
 
-                                                        
-
+                            {/* {gameWon && (<div className="hidden sm:flex justify-center">
+                                <GameComplete title={title} results={results} gameWon={gameWon} goldAmount={goldAmount} />
+                            </div>)} */}
 
                         </div>
-
-                        {gameWon && (<div className="absolute sm:relative flex justify-center">
-                            <GameComplete title={title} results={results} gameWon={gameWon} goldAmount={goldAmount} />
-                        </div>)}
-
                     </div>
 
 

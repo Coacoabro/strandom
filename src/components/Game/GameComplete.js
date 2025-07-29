@@ -37,7 +37,7 @@ export default function GameComplete( {title, results, gameWon, goldAmount} ) {
     return(
         <Drawer open={showDrawer} onOpenChange={setShowDrawer}>
             <DrawerTrigger asChild>
-                <Button className="text-lg cursor-pointer">Show Results</Button>
+                <Button className="sm:text-lg cursor-pointer">Show Results</Button>
             </DrawerTrigger>
             <DrawerContent>
                 <div className="mx-auto w-full max-w-sm">
