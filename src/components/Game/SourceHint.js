@@ -12,7 +12,7 @@ import {
 import { Button } from "../ui/button"
 import { AnimatePresence, motion } from "framer-motion"
 
-export default function SourceHint( { sourceAmount, handleSourceHint, goldAmount, sourceHints } ) {
+export default function SourceHint( { sourceAmount, handleSourceHint, goldAmount, sourceHints, gameWon } ) {
 
     if(sourceHints && !sourceHints.length > 0) return null
 
@@ -20,24 +20,30 @@ export default function SourceHint( { sourceAmount, handleSourceHint, goldAmount
             <AlertDialog>
                 <AlertDialogTrigger>
                     <Button onClick={()=> handleSourceHint()} className="text-xs px-2 gap-0.5 hidden sm:flex cursor-pointer">
-                        <motion.span 
-                            style={{
-                                transformStyle: "preserve-3d",
-                                perspective: 1000
-                            }}
-                            animate={ goldAmount >= 15 ? 
-                                { rotateY: [0, 360] }
-                                : { rotateY: 0 }
-                            }
-                            transition={{
-                                repeat: Infinity,
-                                duration: 3,
-                                ease: "linear"
-                            }}
-                        >
-                            🪙
-                        </motion.span>                                 
-                        {sourceAmount} - Source Hint
+                        {!gameWon ? (
+                            <>
+                                <motion.span 
+                                style={{
+                                    transformStyle: "preserve-3d",
+                                    perspective: 1000
+                                }}
+                                animate={ goldAmount >= 15 ? 
+                                    { rotateY: [0, 360] }
+                                    : { rotateY: 0 }
+                                }
+                                transition={{
+                                    repeat: Infinity,
+                                    duration: 3,
+                                    ease: "linear"
+                                }}
+                            >
+                                🪙
+                            </motion.span>   
+                            
+                            {sourceAmount} - Source Hint
+                        </>
+                        ) :
+                        <div>Nice Job! See Hints</div>}
                     </Button>
                 </AlertDialogTrigger>
 

@@ -430,7 +430,7 @@ export default function Game( {genre} ) {
                                     15 - Word Hint
                                 </Button>
 
-                                <SourceHint sourceAmount={sourceAmount} goldAmount={goldAmount} handleSourceHint={handleSourceHint} sourceHints={sourceHints} />
+                                <SourceHint sourceAmount={sourceAmount} goldAmount={goldAmount} handleSourceHint={handleSourceHint} sourceHints={sourceHints} gameWon={gameWon} />
 
                             </div>
 
