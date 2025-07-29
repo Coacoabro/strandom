@@ -14,7 +14,7 @@ import { AnimatePresence, motion } from "framer-motion"
 
 export default function SourceHint( { sourceAmount, handleSourceHint, goldAmount, sourceHints } ) {
 
-    if(!sourceHints.length > 0) return
+    if(sourceHints && !sourceHints.length > 0) return null
 
     return(
             <AlertDialog>
