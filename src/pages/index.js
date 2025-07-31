@@ -3,6 +3,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import DarkMode from "@/components/DarkMode";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import HowToPlay from "@/components/Game/HowToPlay";
 
 
 
@@ -18,15 +20,21 @@ export default function Home() {
         <CardContent className="p-2 sm:p-6 text-center">
             <h1 className="text-3xl font-bold mb-4">Welcome to Strandom</h1>
             <p className="mb-6 text-gray-600">
-                The fandom-themed word puzzle! Current games come from either the gaming genre or movies/shows. More genres coming soon so stay tuned and have fun!
+                The fandom-themed word puzzle! Our first genre is Gaming, however more genres coming soon so stay tuned and have fun!
             </p>
-            <div className="grid grid-cols-3">
+            <div className="flex justify-evenly">
+              <Tooltip>  
+                <TooltipTrigger>
+                  <HowToPlay />
+                </TooltipTrigger>
+                <TooltipContent className="text-lg">How to Play</TooltipContent>
+              </Tooltip>
               <div className="py-2 flex justify-evenly items-center">
                 <Button asChild className="px-4 py-2 rounded-xl hover:scale-105">
-                    <Link href="/gaming/game">Gaming</Link>
+                    <Link href="/gaming/game">Play</Link>
                 </Button>
               </div>
-              <div className="py-2 flex justify-evenly items-center">
+              {/* <div className="py-2 flex justify-evenly items-center">
                 <Button asChild className="px-4 py-2 rounded-xl hover:scale-105">
                     <Link href="/shows/game">Shows</Link>
                 </Button>
@@ -34,11 +42,6 @@ export default function Home() {
               <div className="py-2 flex justify-evenly items-center">
                 <Button asChild className="px-4 py-2 rounded-xl hover:scale-105">
                     <Link href="/movies/game">Movies</Link>
-                </Button>
-              </div>
-              {/* <div className="py-2 flex justify-evenly items-center">
-                <Button asChild className="px-4 py-2 rounded-xl hover:scale-105">
-                    <Link href="/comics/game">Comics</Link>
                 </Button>
               </div> */}
             </div>
