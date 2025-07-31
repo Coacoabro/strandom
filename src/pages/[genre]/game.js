@@ -84,6 +84,7 @@ export default function Game( {genre} ) {
 
     const gameWon = foundWords.length > 0 && foundWords.length === solutionWords.length
 
+
     //PC
     const handleStartDrag = (row, col) => {
         setIsDragging(true)
@@ -122,6 +123,22 @@ export default function Game( {genre} ) {
         setIsDragging(false)
         setDidDrag(false)
     }
+
+    //DAILY RESET
+    const getToday = () => new Date().toISOString().split('T')[0];
+    const STORAGE_DATE_KEY = 'strandom_last_played_date_${genre}';
+    const CACHE_KEYS_TO_RESET = [`${genre}_foundWords`, `${genre}_results`, `${genre}_hintedWords`, `${genre}_gameWon`, `${genre}_gold`, `${genre}_source`];
+
+    useEffect(() => {
+        const today = getToday();
+        const lastPlayed = localStorage.getItem(STORAGE_DATE_KEY);
+
+        if (lastPlayed !== today) {
+            CACHE_KEYS_TO_RESET.forEach((key) => localStorage.removeItem(key));
+            localStorage.setItem(STORAGE_DATE_KEY, today);
+        }
+        
+    }, []);
 
 
     // SAVE PROGRESS
