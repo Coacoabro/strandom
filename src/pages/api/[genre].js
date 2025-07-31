@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     const url = `https://d35lwzawlg3izy.cloudfront.net/data/${genre}/${date}.json`;
 
     if (genre == "test") {
-        const filePath = path.join(process.cwd(), "public", "boards", "killers.json");
+        const filePath = path.join(process.cwd(), "public", "boards", "20250802.json");
         const fileContents = await fs.readFile(filePath, "utf8");
         const data = JSON.parse(fileContents);
 
