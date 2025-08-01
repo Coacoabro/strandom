@@ -57,6 +57,11 @@ export default function Game( {genre} ) {
 
     const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
+    const startDate = new Date('2025-07-31T00:00:00')
+    const today = new Date()
+    today.setHours(0,0,0,0)
+    const gameNumber = Math.floor((today - startDate.setHours(0,0,0,0)) / (1000 * 60 * 60 * 24))
+
     const [selected, setSelected] = useState([]);
 
 
@@ -351,7 +356,7 @@ export default function Game( {genre} ) {
                         <div className="text-center sm:h-12 py-1 px-4 text-xl sm:text-2xl font-bold space-y-1">
                             <div className="font-medium opacity-50 text-lg sm:hidden">Strandom {genre.charAt(0).toUpperCase() + genre.slice(1)} #1</div>
                             <span>"{title}"</span>
-                            <div className="font-medium opacity-50 hidden sm:block text-xl">Strandom {genre.charAt(0).toUpperCase() + genre.slice(1)} #1</div>
+                            <div className="font-medium opacity-50 hidden sm:block text-xl">Strandom {genre.charAt(0).toUpperCase() + genre.slice(1)} #{gameNumber}</div>
                         </div>
                     </div>
                     <div>
