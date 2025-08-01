@@ -13,8 +13,6 @@ export default async function handler(req, res) {
         day: '2-digit'
     }).format(new Date()).replace(/-/g, '');
 
-    console.log(date)
-
     const url = `https://d35lwzawlg3izy.cloudfront.net/data/${genre}/${date}.json`;
 
     if (genre == "test") {
