@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://strandom.app
+
+# Sitemaps
+Sitemap: https://strandom.app/sitemap.xml
