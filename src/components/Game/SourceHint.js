@@ -27,7 +27,7 @@ export default function SourceHint( { sourceAmount, handleSourceHint, goldAmount
                                     transformStyle: "preserve-3d",
                                     perspective: 1000
                                 }}
-                                animate={ goldAmount >= 15 ? 
+                                animate={ goldAmount >= sourceAmount ? 
                                     { rotateY: [0, 360] }
                                     : { rotateY: 0 }
                                 }

@@ -4,13 +4,16 @@ import path from "path";
 export default async function handler(req, res) {
 
     const { genre } = req.query;
+    const { timezone } = req.body
 
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
-    // const date = `${yyyy}${mm}${dd}`;
-    const date = `20250721`
+    const date = new Intl.DateTimeFormat('en-CA', {
+        timeZone: timezone,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    }).format(new Date()).replace(/-/g, '');
+
+    console.log(date)
 
     const url = `https://d35lwzawlg3izy.cloudfront.net/data/${genre}/${date}.json`;
 

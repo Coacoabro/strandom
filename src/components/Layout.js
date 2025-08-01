@@ -25,7 +25,7 @@ export default function Layout( {children} ) {
 
   const handleCopy = () => {
     navigator.clipboard.writeText("admin@strandom.app");
-    alert("Email copied to clipboard!");
+    alert("admin@strandom.app copied to clipboard");
   };
   
 
@@ -105,8 +105,8 @@ export default function Layout( {children} ) {
 
                       <nav className="flex-1 p-4 space-y-8 text-xl text-black dark:text-white">
                         <Link href="/gaming/game" className="block hover:underline" onClick={()=> setMenuOpen(false)}>Gaming</Link>
-                        <Link href="/shows/game" className="block hover:underline" onClick={()=> setMenuOpen(false)}>Shows</Link>
-                        <Link href="/moves/game" className="block hover:underline" onClick={()=> setMenuOpen(false)}>Movies</Link>
+                        {/* <Link href="/shows/game" className="block hover:underline" onClick={()=> setMenuOpen(false)}>Shows</Link> */}
+                        {/* <Link href="/moves/game" className="block hover:underline" onClick={()=> setMenuOpen(false)}>Movies</Link> */}
                         {/* <Link href="/comics/game" className="block hover:underline" onClick={()=> setMenuOpen(false)}>Comics</Link> */}
                       </nav>
 
@@ -151,7 +151,7 @@ export default function Layout( {children} ) {
           </div>
 
           {/* DESKTOP */}
-          <div className="hidden sm:block">
+          <div className="hidden sm:flex flex-col">
             <div className="fixed top-0 left-0 w-full z-50">
               <div className="flex justify-center p-2">
                 <div className="flex justify-end px-8 text-3xl font-bold w-1/4">
@@ -174,29 +174,31 @@ export default function Layout( {children} ) {
               <div className="flex justify-center items-end max-w-xl mx-auto gap-4 text-lg">
                   
                 <Link href="/gaming/game" className="hover:underline">Gaming</Link>
-                <Link href="/shows/game" className="hover:underline">Shows</Link>
-                <Link href="/movies/game" className="hover:underline">Movies</Link>
+                {/* <Link href="/shows/game" className="hover:underline">Shows</Link> */}
+                {/* <Link href="/movies/game" className="hover:underline">Movies</Link> */}
                   
               </div>
             </div>
 
             {isLoading ? <LoadingScreen /> : children}
 
+            <footer className="hidden fixed bottom-0 w-full sm:flex items-center justify-center gap-4 text-center bg-background py-4 z-50">
+
+              <div>
+                <p><button className="hover:underline text-blue-500 dark:text-cyan-300 cursor-pointer" onClick={handleCopy}>Contact us</button> for suggestions, bug reports, or board ideas!</p>
+                
+              </div>
+
+
+              <div id="copyright" className="text-center text-sm text-muted-foreground">
+                &copy; 2025 - {currentYear} www.strandom.app - All Rights Reserved.
+              </div>
+
+            </footer>
+
           </div>
               
-          <div className="hidden fixed bottom-0 w-full sm:flex flex-col items-center justify-center text-center bg-background py-4">
-
-            <div>
-              <p>Contact us for suggestions, bug reports, or board ideas!</p>
-              <button className="hover:underline text-blue-500 dark:text-cyan-300 cursor-pointer" onClick={handleCopy}>admin@strandom.app</button>
-            </div>
-
-
-            <div id="copyright" className="text-center text-sm text-muted-foreground">
-              &copy; 2025 - {currentYear} www.strandom.app - All Rights Reserved.
-            </div>
-
-          </div>
+          
           <Toaster />
 
         </ThemeProvider>

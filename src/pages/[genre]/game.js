@@ -19,52 +19,53 @@ export async function getServerSideProps(context) {
     }
 }
 
-const fetchGameData = async (genre) => {
-    const response = await fetch(`/api/${genre}`);
+const fetchGameData = async (genre, timezone) => {
+    const response = await fetch(`/api/${genre}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify({ timezone: timezone })
+    });
     if (!response.ok) {
         throw new Error('Network response was not ok');
     }
     return await response.json();
 };
 
+
+const getInitialState = (key, defaultValue) => {
+
+    if (typeof window === 'undefined') return defaultValue
+
+    const stored = localStorage.getItem(key)
+    if (stored === null) return defaultValue
+
+    if (key.endsWith('foundWords')) return JSON.parse(stored)
+    if (key.endsWith('hintedWords') || key.endsWith('results')) return stored.split(",").filter(Boolean);
+    if (key.endsWith('gold') || key.endsWith('source')) return Number(stored);
+    
+}
+
 export default function Game( {genre} ) {
 
+    const getToday = () => {
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+        return today.toLocaleDateString('en-CA')
+    }
+    const STORAGE_DATE_KEY = `strandom_last_played_date_${genre}`;
+    const CACHE_KEYS_TO_RESET = [`${genre}_foundWords`, `${genre}_results`, `${genre}_hintedWords`, `${genre}_gameWon`, `${genre}_gold`, `${genre}_source`];
+
+    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
     const [selected, setSelected] = useState([]);
-    const [foundWords, setFoundWords] = useState(() => {
-        if (typeof window !== "undefined") {
-            const saved = localStorage.getItem(`${genre}_foundWords`);
-            return saved ? JSON.parse(saved) : [];
-        }
-        return [];
-    });
-    const [hintedWords, setHintedWords] = useState(() => {
-        if (typeof window !== "undefined") {
-            const saved = localStorage.getItem(`${genre}_hintedWords`);
-            return saved ? saved.split(",") : [];
-        }
-        return [];
-    })
-    const [results, setResults] = useState(() => {
-        if (typeof window !== "undefined") {
-            const saved = localStorage.getItem(`${genre}_results`);
-            return saved ? saved.split(",") : [];
-        }
-        return [];
-    });
-    const [goldAmount, setGoldAmount] = useState(() => {
-        if (typeof window !== "undefined") {
-            const saved = localStorage.getItem(`${genre}_gold`);
-            return saved ? Number(saved) : 0
-        }
-        return 0;
-    });
-    const [sourceAmount, setSourceAmount] = useState(() => {
-        if (typeof window !== "undefined") {
-            const saved = localStorage.getItem(`${genre}_source`);
-            return saved ? Number(saved) : 10
-        }
-        return 10;
-    })
+
+
+    const [foundWords, setFoundWords] = useState(() => getInitialState(`${genre}_foundWords`, []));
+    const [hintedWords, setHintedWords] = useState(() => getInitialState(`${genre}_hintedWords`, []));
+    const [results, setResults] = useState(() => getInitialState(`${genre}_results`, []));
+    const [goldAmount, setGoldAmount] = useState(() => getInitialState(`${genre}_gold`, 0));
+    const [sourceAmount, setSourceAmount] = useState(() => getInitialState(`${genre}_source`, 10)); 
+
 
     const [goldGained, setGoldGained] = useState(0)
 
@@ -81,6 +82,7 @@ export default function Game( {genre} ) {
     const [guessedWords, setGuessedWords] = useState([])
 
     const [alreadyOpened, setAlreadyOpened] = useState(false)
+    // const [resetDone, setResetDone] = useState(false)
 
     const gameWon = foundWords.length > 0 && foundWords.length === solutionWords.length
 
@@ -125,20 +127,25 @@ export default function Game( {genre} ) {
     }
 
     //DAILY RESET
-    const getToday = () => new Date().toISOString().split('T')[0];
-    const STORAGE_DATE_KEY = 'strandom_last_played_date_${genre}';
-    const CACHE_KEYS_TO_RESET = [`${genre}_foundWords`, `${genre}_results`, `${genre}_hintedWords`, `${genre}_gameWon`, `${genre}_gold`, `${genre}_source`];
 
     useEffect(() => {
-        const today = getToday();
+        if (typeof window === "undefined") return;
+
+        const today = getToday(); // your date string logic
+        // const today = '7-27-2025'
         const lastPlayed = localStorage.getItem(STORAGE_DATE_KEY);
 
         if (lastPlayed !== today) {
             CACHE_KEYS_TO_RESET.forEach((key) => localStorage.removeItem(key));
             localStorage.setItem(STORAGE_DATE_KEY, today);
+            setFoundWords([]);
+            setHintedWords([]);
+            setResults([]);
+            setGoldAmount(0);
+            setSourceAmount(10);
         }
-        
-    }, []);
+    }, [genre]);
+
 
 
     // SAVE PROGRESS
@@ -182,7 +189,7 @@ export default function Game( {genre} ) {
     }
 
     const handleSourceHint = () => {
-        if(goldAmount > sourceAmount && !gameWon && sourceAmount !== 40){
+        if(goldAmount >= sourceAmount && !gameWon && sourceAmount !== 40){
             setGoldAmount(goldAmount - sourceAmount)
             setGoldGained(`${sourceAmount}`)
             setTimeout(() => setGoldGained(0), 400)
@@ -293,8 +300,9 @@ export default function Game( {genre} ) {
 
     // LOAD UP THE GAME
     const { data: gameInfo, isLoading, isError } = useQuery({
-        queryKey: ["game", genre],
-        queryFn: () => fetchGameData(genre),
+        queryKey: ["game", genre, userTimezone],
+        queryFn: () => fetchGameData(genre, userTimezone),
+        enabled: !!userTimezone,
         staleTime: 1000 * 60 * 60, // 1 hour
     });
     useEffect(() => {
@@ -311,6 +319,14 @@ export default function Game( {genre} ) {
             setAlreadyOpened(true)
         }
     }, [gameWon, alreadyOpened])
+    useEffect(() => {
+        if(gameWon && goldAmount == 66 && guessedWords.length == solutionWords.length){
+            setAlert("Perfect score!")
+            setGoldAmount(200)
+            setGoldGained(`+134`)
+            setTimeout(() => setGoldGained(0), 400)
+        }
+    }, [gameWon])
 
     if (isLoading) {
         return(
@@ -320,11 +336,13 @@ export default function Game( {genre} ) {
         )
     }
 
-    if (gameInfo){
+    if (!gameInfo) {
+        return(<div className="flex min-h-screen flex-col items-center justify-center">Whoops! Nothing yet. Stay tuned for more genres!</div>)
+    }
+        
+    else {
 
         const sourceHints = gameInfo.sourceHints
-
-        console.log(sourceAmount)
 
         return (
             <main className="flex min-h-screen flex-col items-center justify-center py-2 sm:p-6">
