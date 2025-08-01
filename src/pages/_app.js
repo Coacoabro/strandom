@@ -3,7 +3,7 @@ import Layout from "../components/Layout"
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useState } from "react";
 import Head from "next/head";
-
+import { Analytics } from "@vercel/analytics/next"
 
 
 export default function Strandom({ Component, pageProps }) {
@@ -20,6 +20,7 @@ export default function Strandom({ Component, pageProps }) {
       </Head>
       <Layout>
         <Component {...pageProps} />
+        <Analytics />
       </Layout>
     </QueryClientProvider>
   );
