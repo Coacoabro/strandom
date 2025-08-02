@@ -52,7 +52,7 @@ export default function Game( {genre} ) {
         today.setHours(0, 0, 0, 0)
         return today.toLocaleDateString('en-CA')
     }
-    
+
     const STORAGE_DATE_KEY = `strandom_last_played_date_${genre}`;
     const CACHE_KEYS_TO_RESET = [`${genre}_foundWords`, `${genre}_results`, `${genre}_hintedWords`, `${genre}_gameWon`, `${genre}_gold`, `${genre}_source`];
 
@@ -66,11 +66,18 @@ export default function Game( {genre} ) {
     const [selected, setSelected] = useState([]);
 
 
-    const [foundWords, setFoundWords] = useState(() => getInitialState(`${genre}_foundWords`, []));
-    const [hintedWords, setHintedWords] = useState(() => getInitialState(`${genre}_hintedWords`, []));
-    const [results, setResults] = useState(() => getInitialState(`${genre}_results`, []));
-    const [goldAmount, setGoldAmount] = useState(() => getInitialState(`${genre}_gold`, 0));
-    const [sourceAmount, setSourceAmount] = useState(() => getInitialState(`${genre}_source`, 10)); 
+    // const [foundWords, setFoundWords] = useState(() => getInitialState(`${genre}_foundWords`, []));
+    // const [hintedWords, setHintedWords] = useState(() => getInitialState(`${genre}_hintedWords`, []));
+    // const [results, setResults] = useState(() => getInitialState(`${genre}_results`, []));
+    // const [goldAmount, setGoldAmount] = useState(() => getInitialState(`${genre}_gold`, 0));
+    // const [sourceAmount, setSourceAmount] = useState(() => getInitialState(`${genre}_source`, 10)); 
+
+    const [foundWords, setFoundWords] = useState([]);
+    const [hintedWords, setHintedWords] = useState([]);
+    const [results, setResults] = useState([]);
+    const [goldAmount, setGoldAmount] = useState(0);
+    const [sourceAmount, setSourceAmount] = useState(10);
+    const [hydrated, setHydrated] = useState(false);
 
 
     const [goldGained, setGoldGained] = useState(0)
@@ -91,6 +98,37 @@ export default function Game( {genre} ) {
     // const [resetDone, setResetDone] = useState(false)
 
     const gameWon = foundWords.length > 0 && foundWords.length === solutionWords.length
+
+
+    useEffect(() => {
+        if (typeof window === "undefined") return;
+
+        const today = getToday();
+        // const today = "asdf"
+        const lastPlayed = localStorage.getItem(STORAGE_DATE_KEY);
+
+        if (!lastPlayed || lastPlayed !== today) {
+            // reset
+            CACHE_KEYS_TO_RESET.forEach((key) => localStorage.removeItem(key));
+            localStorage.setItem(STORAGE_DATE_KEY, today);
+            setFoundWords([]);
+            setHintedWords([]);
+            setResults([]);
+            setGoldAmount(0);
+            setSourceAmount(10);
+        } else {
+            console.log("gucci")
+            // hydrate from localStorage
+            setFoundWords(JSON.parse(localStorage.getItem(`${genre}_foundWords`) || "[]"));
+            setHintedWords((localStorage.getItem(`${genre}_hintedWords`) || "").split(",").filter(Boolean));
+            setResults((localStorage.getItem(`${genre}_results`) || "").split(",").filter(Boolean));
+            setGoldAmount(Number(localStorage.getItem(`${genre}_gold`) || 0));
+            setSourceAmount(Number(localStorage.getItem(`${genre}_source`) || 10));
+        }
+
+        setHydrated(true);
+
+    }, [genre, hydrated]);
 
 
     //PC
@@ -134,23 +172,23 @@ export default function Game( {genre} ) {
 
     //DAILY RESET
 
-    useEffect(() => {
-        if (typeof window === "undefined") return;
+    // useEffect(() => {
+    //     if (typeof window === "undefined") return;
 
-        const today = getToday(); // your date string logic
-        // const today = '7-27-2025'
-        const lastPlayed = localStorage.getItem(STORAGE_DATE_KEY);
+    //     const today = getToday(); // your date string logic
+    //     // const today = '7-27-2025'
+    //     const lastPlayed = localStorage.getItem(STORAGE_DATE_KEY);
 
-        if (lastPlayed !== today) {
-            CACHE_KEYS_TO_RESET.forEach((key) => localStorage.removeItem(key));
-            localStorage.setItem(STORAGE_DATE_KEY, today);
-            setFoundWords([]);
-            setHintedWords([]);
-            setResults([]);
-            setGoldAmount(0);
-            setSourceAmount(10);
-        }
-    }, [genre]);
+    //     if (lastPlayed !== today) {
+    //         CACHE_KEYS_TO_RESET.forEach((key) => localStorage.removeItem(key));
+    //         localStorage.setItem(STORAGE_DATE_KEY, today);
+    //         setFoundWords([]);
+    //         setHintedWords([]);
+    //         setResults([]);
+    //         setGoldAmount(0);
+    //         setSourceAmount(10);
+    //     }
+    // }, [genre]);
 
 
 
@@ -342,7 +380,7 @@ export default function Game( {genre} ) {
         )
     }
 
-    if (!gameInfo) {
+    if (!gameInfo || !hydrated) {
         return(<div className="flex min-h-screen flex-col items-center justify-center">Whoops! Nothing yet. Stay tuned for more genres!</div>)
     }
         
@@ -355,7 +393,7 @@ export default function Game( {genre} ) {
                 <div className="max-w-7xl mx-auto sm:space-y-4">
                     <div className="flex items-center justify-center">
                         <div className="text-center sm:h-12 py-1 px-4 text-xl sm:text-2xl font-bold space-y-1">
-                            <div className="font-medium opacity-50 text-lg sm:hidden">Strandom {genre.charAt(0).toUpperCase() + genre.slice(1)} #1</div>
+                            <div className="font-medium opacity-50 text-lg sm:hidden">Strandom {genre.charAt(0).toUpperCase() + genre.slice(1)} #{gameNumber}</div>
                             <span>"{title}"</span>
                             <div className="font-medium opacity-50 hidden sm:block text-xl">Strandom {genre.charAt(0).toUpperCase() + genre.slice(1)} #{gameNumber}</div>
                         </div>
