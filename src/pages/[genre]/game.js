@@ -52,6 +52,7 @@ export default function Game( {genre} ) {
         today.setHours(0, 0, 0, 0)
         return today.toLocaleDateString('en-CA')
     }
+    
     const STORAGE_DATE_KEY = `strandom_last_played_date_${genre}`;
     const CACHE_KEYS_TO_RESET = [`${genre}_foundWords`, `${genre}_results`, `${genre}_hintedWords`, `${genre}_gameWon`, `${genre}_gold`, `${genre}_source`];
 
