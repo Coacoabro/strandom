@@ -32,19 +32,6 @@ const fetchGameData = async (genre, timezone) => {
 };
 
 
-const getInitialState = (key, defaultValue) => {
-
-    if (typeof window === 'undefined') return defaultValue
-
-    const stored = localStorage.getItem(key)
-    if (stored === null) return defaultValue
-
-    if (key.endsWith('foundWords')) return JSON.parse(stored)
-    if (key.endsWith('hintedWords') || key.endsWith('results')) return stored.split(",").filter(Boolean);
-    if (key.endsWith('gold') || key.endsWith('source')) return Number(stored);
-    
-}
-
 export default function Game( {genre} ) {
 
     const getToday = () => {
@@ -64,13 +51,6 @@ export default function Game( {genre} ) {
     const gameNumber = Math.floor((today - startDate.setHours(0,0,0,0)) / (1000 * 60 * 60 * 24))
 
     const [selected, setSelected] = useState([]);
-
-
-    // const [foundWords, setFoundWords] = useState(() => getInitialState(`${genre}_foundWords`, []));
-    // const [hintedWords, setHintedWords] = useState(() => getInitialState(`${genre}_hintedWords`, []));
-    // const [results, setResults] = useState(() => getInitialState(`${genre}_results`, []));
-    // const [goldAmount, setGoldAmount] = useState(() => getInitialState(`${genre}_gold`, 0));
-    // const [sourceAmount, setSourceAmount] = useState(() => getInitialState(`${genre}_source`, 10)); 
 
     const [foundWords, setFoundWords] = useState([]);
     const [hintedWords, setHintedWords] = useState([]);
@@ -96,11 +76,18 @@ export default function Game( {genre} ) {
 
     const [alreadyOpened, setAlreadyOpened] = useState(false)
 
+    const isMobile = typeof window !== "undefined" && (
+        window.matchMedia("(max-width: 768px)").matches ||
+        navigator.userAgentData?.mobile ||
+        /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+    );
+
     const gameWon = foundWords.length > 0 && foundWords.length === solutionWords.length
 
 
     useEffect(() => {
         if (typeof window === "undefined") return;
+        if (isMobile && hydrated) return
 
         const today = getToday();
         const lastPlayed = localStorage.getItem(STORAGE_DATE_KEY);
@@ -126,7 +113,7 @@ export default function Game( {genre} ) {
 
         setHydrated(true);
 
-    }, [genre, hydrated]);
+    }, [genre, hydrated, isMobile]);
 
 
     //PC
