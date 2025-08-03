@@ -2,7 +2,7 @@ import { Button } from "../ui/button"
 import { AnimatePresence, motion } from "framer-motion"
 import GameComplete from "./GameComplete"
 
-export default function WordHints( { handleWordHint, goldAmount, title, results, gameWon } ) {
+export default function WordHints( { handleWordHint, goldAmount, title, results, gameWon, gameNumber } ) {
     
     return(
         <>

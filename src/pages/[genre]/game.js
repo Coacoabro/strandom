@@ -168,27 +168,6 @@ export default function Game( {genre} ) {
         setDidDrag(false)
     }
 
-    //DAILY RESET
-
-    // useEffect(() => {
-    //     if (typeof window === "undefined") return;
-
-    //     const today = getToday(); // your date string logic
-    //     // const today = '7-27-2025'
-    //     const lastPlayed = localStorage.getItem(STORAGE_DATE_KEY);
-
-    //     if (lastPlayed !== today) {
-    //         CACHE_KEYS_TO_RESET.forEach((key) => localStorage.removeItem(key));
-    //         localStorage.setItem(STORAGE_DATE_KEY, today);
-    //         setFoundWords([]);
-    //         setHintedWords([]);
-    //         setResults([]);
-    //         setGoldAmount(0);
-    //         setSourceAmount(10);
-    //     }
-    // }, [genre]);
-
-
 
     // SAVE PROGRESS
     useEffect(() => {
@@ -326,8 +305,18 @@ export default function Game( {genre} ) {
         if (isAlreadySelected) {
             handleWordCheck()
         } else {
-            setSelected([...selected, [row, col]]);
-            setAlert(null)
+            const temp = [row, col]
+            const exists = selected.some(subArr => 
+                subArr.length === temp.length && 
+                subArr.every((el, i) => el === temp[i])
+            )
+            if (exists) {
+                handleWordCheck()
+            }
+            else {
+                setSelected([...selected, [row, col]]);
+                setAlert(null)
+            }
         }
 
         if (selected.length > 0) {
