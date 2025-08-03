@@ -103,8 +103,7 @@ export default function Game( {genre} ) {
     useEffect(() => {
         if (typeof window === "undefined") return;
 
-        // const today = getToday();
-        const today = "asdf"
+        const today = getToday();
         const lastPlayed = localStorage.getItem(STORAGE_DATE_KEY);
 
         if (!lastPlayed || lastPlayed !== today) {
