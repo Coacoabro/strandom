@@ -14,7 +14,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 
 
-export default function GameComplete( {title, results, gameWon, goldAmount} ) {
+export default function GameComplete( {title, results, gameWon, goldAmount, gameNumber} ) {
 
     const router = useRouter()
     const { genre } = router.query
@@ -44,7 +44,7 @@ export default function GameComplete( {title, results, gameWon, goldAmount} ) {
                     <DrawerHeader>
                         <DrawerTitle>Nice Job!</DrawerTitle>
                         <DrawerDescription>
-                            <p>You completed Strandom {genre.charAt(0).toUpperCase() + genre.slice(1)} #1:</p>
+                            <p>You completed Strandom {genre.charAt(0).toUpperCase() + genre.slice(1)} #{gameNumber}:</p>
                             <p>"{title}"</p>
                         </DrawerDescription>
                     </DrawerHeader>

@@ -28,7 +28,7 @@ export default function WordHints( { handleWordHint, goldAmount, title, results,
                 15 - Word Hint
             </Button></>)
             :     
-            (<GameComplete title={title} results={results} gameWon={gameWon} goldAmount={goldAmount} />)
+            (<GameComplete title={title} results={results} gameWon={gameWon} goldAmount={goldAmount} gameNumber={gameNumber} />)
         }
         </>
     )

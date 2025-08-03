@@ -95,7 +95,6 @@ export default function Game( {genre} ) {
     const [guessedWords, setGuessedWords] = useState([])
 
     const [alreadyOpened, setAlreadyOpened] = useState(false)
-    // const [resetDone, setResetDone] = useState(false)
 
     const gameWon = foundWords.length > 0 && foundWords.length === solutionWords.length
 
@@ -452,7 +451,7 @@ export default function Game( {genre} ) {
 
                                 <div className="flex space-x-2">
 
-                                    <WordHints handleWordHint={handleWordHint} title={title} results={results} gameWon={gameWon} goldAmount={goldAmount} />
+                                    <WordHints handleWordHint={handleWordHint} title={title} results={results} gameWon={gameWon} goldAmount={goldAmount} gameNumber={gameNumber} />
 
                                     <SourceHint sourceAmount={sourceAmount} goldAmount={goldAmount} handleSourceHint={handleSourceHint} sourceHints={sourceHints} gameWon={gameWon} />
 
