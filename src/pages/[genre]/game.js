@@ -11,6 +11,8 @@ import LoadingGameBoard from "@/components/Game/LoadingGameBoard";
 import GameComplete from "@/components/Game/GameComplete";
 import SourceHint from "@/components/Game/SourceHint";
 import WordHints from "@/components/Game/WordHints";
+import { useRouter } from "next/router";
+import GameSelect from "@/components/GameSelect";
 
 export async function getServerSideProps(context) {
     const { genre } = context.params
@@ -19,8 +21,8 @@ export async function getServerSideProps(context) {
     }
 }
 
-const fetchGameData = async (genre, timezone) => {
-    const response = await fetch(`/api/${genre}`, {
+const fetchGameData = async (genre, timezone, board) => {
+    const response = await fetch(`/api/${genre}?board=${board}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json'},
         body: JSON.stringify({ timezone: timezone })
@@ -33,6 +35,9 @@ const fetchGameData = async (genre, timezone) => {
 
 
 export default function Game( {genre} ) {
+
+    const router = useRouter()
+    const { board } = router.query
 
     const getToday = () => {
         const today = new Date()
@@ -58,6 +63,7 @@ export default function Game( {genre} ) {
     const [goldAmount, setGoldAmount] = useState(0);
     const [sourceAmount, setSourceAmount] = useState(10);
     const [hydrated, setHydrated] = useState(false);
+    const [boardReady, setBoardReady] = useState(false)
 
 
     const [goldGained, setGoldGained] = useState(0)
@@ -87,7 +93,9 @@ export default function Game( {genre} ) {
 
     useEffect(() => {
         if (typeof window === "undefined") return;
-        if (isMobile && hydrated) return
+        // if (hydrated && isMobile) return
+
+        setBoardReady(false)
 
         const today = getToday();
         const lastPlayed = localStorage.getItem(STORAGE_DATE_KEY);
@@ -102,18 +110,19 @@ export default function Game( {genre} ) {
             setGoldAmount(0);
             setSourceAmount(10);
         } else {
-            console.log("gucci")
             // hydrate from localStorage
-            setFoundWords(JSON.parse(localStorage.getItem(`${genre}_foundWords`) || "[]"));
-            setHintedWords((localStorage.getItem(`${genre}_hintedWords`) || "").split(",").filter(Boolean));
-            setResults((localStorage.getItem(`${genre}_results`) || "").split(",").filter(Boolean));
-            setGoldAmount(Number(localStorage.getItem(`${genre}_gold`) || 0));
-            setSourceAmount(Number(localStorage.getItem(`${genre}_source`) || 10));
+            setFoundWords(JSON.parse(localStorage.getItem(`${board}_foundWords`) || "[]"));
+            setHintedWords((localStorage.getItem(`${board}_hintedWords`) || "").split(",").filter(Boolean));
+            setResults((localStorage.getItem(`${board}_results`) || "").split(",").filter(Boolean));
+            setGoldAmount(Number(localStorage.getItem(`${board}_gold`) || 0));
+            setSourceAmount(Number(localStorage.getItem(`${board}_source`) || 10));
         }
 
+        setAlert("")
         setHydrated(true);
+        setBoardReady(true)
 
-    }, [genre, hydrated, isMobile]);
+    }, [genre, hydrated, isMobile, board]);
 
 
     //PC
@@ -158,17 +167,20 @@ export default function Game( {genre} ) {
 
     // SAVE PROGRESS
     useEffect(() => {
+
+        if(!boardReady) return
+
         if(gameWon) {
-            localStorage.setItem(`${genre}_gameWon`, true)
+            localStorage.setItem(`${board}_gameWon`, true)
         } 
 
-        localStorage.setItem(`${genre}_foundWords`, JSON.stringify(foundWords))
-        localStorage.setItem(`${genre}_results`, results.join(","))
-        localStorage.setItem(`${genre}_hintedWords`, hintedWords.join(","))
-        localStorage.setItem(`${genre}_gold`, goldAmount)
-        localStorage.setItem(`${genre}_source`, sourceAmount)
+        localStorage.setItem(`${board}_foundWords`, JSON.stringify(foundWords))
+        localStorage.setItem(`${board}_results`, results.join(","))
+        localStorage.setItem(`${board}_hintedWords`, hintedWords.join(","))
+        localStorage.setItem(`${board}_gold`, goldAmount)
+        localStorage.setItem(`${board}_source`, sourceAmount)
 
-    }, [foundWords, gameWon, results, goldAmount, hintedWords])
+    }, [foundWords, gameWon, results, goldAmount, hintedWords, boardReady])
 
     // DICTIONARY AND HINT
     useEffect(() => {
@@ -318,9 +330,9 @@ export default function Game( {genre} ) {
 
     // LOAD UP THE GAME
     const { data: gameInfo, isLoading, isError } = useQuery({
-        queryKey: ["game", genre, userTimezone],
-        queryFn: () => fetchGameData(genre, userTimezone),
-        enabled: !!userTimezone,
+        queryKey: ["game", genre, userTimezone, board],
+        queryFn: () => fetchGameData(genre, userTimezone, board),
+        enabled: !!userTimezone && !!board,
         staleTime: 1000 * 60 * 60, // 1 hour
     });
     useEffect(() => {
@@ -344,17 +356,27 @@ export default function Game( {genre} ) {
             setGoldGained(`+134`)
             setTimeout(() => setGoldGained(0), 400)
         }
+
     }, [gameWon])
 
-    if (isLoading) {
+    if (!board) {
+        return(
+            <div className="flex min-h-screen flex-col items-center justify-center">
+                <p>Pick a board to play!</p>
+                <h1><GameSelect /></h1>
+            </div>
+        )
+    }
+
+    if (isLoading || !boardReady) {
         return(
             <div className="flex min-h-screen flex-col items-center justify-center sm:p-6">
                 <LoadingGameBoard />
             </div>
         )
     }
-
-    if (!gameInfo || !hydrated) {
+    
+    else if (!gameInfo || !hydrated) {
         return(<div className="flex min-h-screen flex-col items-center justify-center">Whoops! Nothing yet. Stay tuned for more genres!</div>)
     }
         
@@ -367,9 +389,9 @@ export default function Game( {genre} ) {
                 <div className="max-w-7xl mx-auto sm:space-y-4">
                     <div className="flex items-center justify-center">
                         <div className="text-center sm:h-12 py-1 px-4 text-xl sm:text-2xl font-bold space-y-1">
-                            <div className="font-medium opacity-50 text-lg sm:hidden">Strandom {genre.charAt(0).toUpperCase() + genre.slice(1)} #{gameNumber}</div>
+                            <div className="font-medium opacity-50 text-lg sm:hidden">Strandom {genre.charAt(0).toUpperCase() + genre.slice(1)} #{board}</div>
                             <span>"{title}"</span>
-                            <div className="font-medium opacity-50 hidden sm:block text-xl">Strandom {genre.charAt(0).toUpperCase() + genre.slice(1)} #{gameNumber}</div>
+                            <div className="font-medium opacity-50 hidden sm:block text-xl">Strandom {genre.charAt(0).toUpperCase() + genre.slice(1)} #{board}</div>
                         </div>
                     </div>
                     <div>
@@ -427,7 +449,7 @@ export default function Game( {genre} ) {
 
                                 <div className="flex space-x-2">
 
-                                    <WordHints handleWordHint={handleWordHint} title={title} results={results} gameWon={gameWon} goldAmount={goldAmount} gameNumber={gameNumber} />
+                                    <WordHints handleWordHint={handleWordHint} title={title} results={results} gameWon={gameWon} goldAmount={goldAmount} gameNumber={board} />
 
                                     <SourceHint sourceAmount={sourceAmount} goldAmount={goldAmount} handleSourceHint={handleSourceHint} sourceHints={sourceHints} gameWon={gameWon} />
 
@@ -450,10 +472,10 @@ export default function Game( {genre} ) {
 
                     {/* <Button
                         onClick={() => {
-                            localStorage.removeItem(`${genre}_foundWords`)
-                            localStorage.removeItem(`${genre}_results`)
-                            localStorage.removeItem(`${genre}_hintedWords`)
-                            localStorage.removeItem(`${genre}_gameWon`)
+                            localStorage.removeItem(`${board}_foundWords`)
+                            localStorage.removeItem(`${board}_results`)
+                            localStorage.removeItem(`${board}_hintedWords`)
+                            localStorage.removeItem(`${board}_gameWon`)
                             setFoundWords([])
                             setGuessedWords([])
                             setHintedWords([])

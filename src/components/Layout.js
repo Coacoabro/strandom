@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import LoadingScreen from "./LoadingScreen";
 import HowToPlay from "./Game/HowToPlay";
 import { Toaster } from "@/components/ui/sonner";
+import GameSelect from "./GameSelect"
 
 export default function Layout( {children} ) {
 
@@ -19,6 +20,7 @@ export default function Layout( {children} ) {
   const menuRef = useRef()
 
   const router = useRouter();
+  const { board } = router.query
   const [isLoading, setIsLoading] = useState(false)
 
   const currentYear = new Date().getFullYear();
@@ -104,7 +106,8 @@ export default function Layout( {children} ) {
                       </div>
 
                       <nav className="flex-1 p-4 space-y-8 text-xl text-black dark:text-white">
-                        <Link href="/gaming/game" className="block hover:underline" onClick={()=> setMenuOpen(false)}>Gaming</Link>
+                        <GameSelect />
+                        {/* <Link href="/gaming/game" className="block hover:underline" onClick={()=> setMenuOpen(false)}>Gaming</Link> */}
                         {/* <Link href="/shows/game" className="block hover:underline" onClick={()=> setMenuOpen(false)}>Shows</Link> */}
                         {/* <Link href="/moves/game" className="block hover:underline" onClick={()=> setMenuOpen(false)}>Movies</Link> */}
                         {/* <Link href="/comics/game" className="block hover:underline" onClick={()=> setMenuOpen(false)}>Comics</Link> */}
@@ -171,11 +174,12 @@ export default function Layout( {children} ) {
                 </div>
               </div>
                 
-              <div className="flex justify-center items-end max-w-xl mx-auto gap-4 text-lg">
+              <div className={`flex justify-center items-end max-w-xl mx-auto gap-4 text-lg ${router.asPath.includes('gaming') && router.asPath.includes('board') ? "" : "hidden"}`}>
                   
-                <Link href="/gaming/game" className="hover:underline">Gaming</Link>
+                {/* <Link href="/gaming/game" className="hover:underline">Gaming</Link> */}
                 {/* <Link href="/shows/game" className="hover:underline">Shows</Link> */}
                 {/* <Link href="/movies/game" className="hover:underline">Movies</Link> */}
+                <GameSelect />
                   
               </div>
             </div>
