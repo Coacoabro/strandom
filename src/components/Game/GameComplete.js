@@ -27,7 +27,7 @@ export default function GameComplete( {title, results, gameWon, goldAmount, game
             rows.push(results.slice(i, i+groupSize).join(" "))
         }
         const resultGrid = rows.join("\n")
-        const titleText = `You completed Strandom ${genre.charAt(0).toUpperCase() + genre.slice(1)} #1:`
+        const titleText = `You completed Strandom ${genre.charAt(0).toUpperCase() + genre.slice(1)} #${gameNumber}:`
         const shareText = `${titleText}\n${title}\n${resultGrid}\nYou collected ${goldAmount}🪙\nPlay: https://strandom.app/${genre}/game`
         navigator.clipboard.writeText(shareText).then(() => toast("Bragging rights copied!"))
     }
